@@ -11,8 +11,6 @@
 
 #include <me_MemorySegment.h> // your time to shine, sweetie!
 #include <me_Bits.h>
-#include <avr/common.h> // SREG
-#include <avr/interrupt.h> // cli()
 
 using namespace me_Uart;
 
@@ -101,6 +99,8 @@ TBool TUartChannel::SendByte(
 }
 
 // ( Freetown
+const TMemorySegment StatusReg =
+  FromAddrSize(95, 1);
 const TMemorySegment UartStatusReg_1 =
   FromAddrSize(192, 1);
 const TMemorySegment UartStatusReg_2 =
@@ -109,6 +109,9 @@ const TMemorySegment UartStatusReg_3 =
   FromAddrSize(194, 1);
 const TMemorySegment UartData =
   FromAddrSize(198, 1);
+
+// Stolen from [avr/interrupt.h]
+# define cli()  __asm__ __volatile__ ("cli" ::: "memory")
 
 // Set asynchronous UART mode
 void Freetown::SetAsyncMode()
@@ -224,6 +227,29 @@ void Freetown::EnableTransmitter()
   SetBit(&UartStatusReg_2.Bytes[0], BitOffs, true);
 }
 
+/*
+  Transmit data frame up to 8 bits in size.
+
+  Data frame size can be 5, 6, 7, 8, and 9 bits.
+  Transmitting 9-bit frames requires more work and not needed.
+*/
+TBool Freetown::TransmitFrame(
+  TUint_1 Data
+)
+{
+  if (!ReadyToTransmit())
+    return false;
+
+  TUint_1 OrigSreg = StatusReg.Bytes[0];
+  cli();
+
+  UartData.Bytes[0] = Data;
+
+  StatusReg.Bytes[0] = OrigSreg;
+
+  return true;
+}
+
 // Return true when transmitter is idle
 TBool Freetown::ReadyToTransmit()
 {
@@ -233,28 +259,6 @@ TBool Freetown::ReadyToTransmit()
 
   return GetBit(UartStatusReg_1.Bytes[0], TransmitBufferIsEmpty_BitOffs);
 }
-
-/*
-  Transmit data frame up to 8 bits in size.
-
-  Data frame size can be 5, 6, 7, 8, and 9 bits.
-  Transmitting 9-bit frames requires more work and not needed.
-*/
-TBool Freetown::TransmitFrame(TUint_1 Data)
-{
-  if (!ReadyToTransmit())
-    return false;
-
-  TUint_1 OrigSreg = SREG;
-  cli();
-
-  UartData.Bytes[0] = Data;
-
-  SREG = OrigSreg;
-
-  return true;
-}
-
 
 // ) Freetown
 

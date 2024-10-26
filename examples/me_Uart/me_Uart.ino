@@ -2,21 +2,17 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-25
+  Last mod.: 2024-10-26
 */
 
 #include <me_Uart.h>
 
 #include <me_BaseTypes.h>
 #include <me_UartSpeeds.h>
-#include <me_Console.h>
 
 void setup()
 {
-  Serial.begin(me_UartSpeeds::Arduino_Normal_Bps);
-  Console.Print("[me_Uart] Start.");
   RunTest();
-  Console.Print("[me_Uart] Done.");
 }
 
 void loop()
@@ -36,15 +32,16 @@ void RunTest()
     for (TUint_1 Byte = 64; Byte < 128; ++Byte)
     {
       Uart.SendByte(Byte);
-      delay(10);
+      delay(100);
     }
 
     Uart.SendByte(10);
 
-    delay(100);
+    delay(400);
   }
 }
 
 /*
   2024-10-25
+  2024-10-26
 */
