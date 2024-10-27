@@ -2,15 +2,13 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-25
+  Last mod.: 2024-10-27
 */
 
 /*
-  I have no clear vision what it will become.
-  But I know I want SendByte() and GetByte().
-  And I know I can do this.
+  Here is unsophisticated design. Three functions.
 
-  -- Martin, 2024-10-25
+  We are not using external buffers for transmission or receiving.
 */
 
 #pragma once
@@ -19,10 +17,6 @@
 
 namespace me_Uart
 {
-  /*
-    UART communication core
-  */
-
   // Set-up for given speed (no parity, 8 data bits, 1 stop bit)
   TBool Init(TUint_4 Speed);
 
@@ -67,18 +61,37 @@ namespace me_Uart
     // Disable receiver
     void DisableReceiver();
 
+    // Enable receiver
+    void EnableReceiver();
+
     // Enable transmitter
     void EnableTransmitter();
 
     // Return true when transmitter is idle
     TBool ReadyToTransmit() __attribute__((optimize("O0")));
 
-    // Transmit data frame up to 8 bits in size
-    void TransmitFrame(TUint_1 Data);
+    // Put byte to transceiver buffer
+    void Buffer_PutByte(TUint_1 Data);
+
+    // Extract byte from transceiver buffer
+    void Buffer_ExtractByte(TUint_1 * Data);
+
+    // Return true when there is data in receive buffer
+    TBool ReceivedByte() __attribute__((optimize("O0")));
+
+    // Return true if there is parity error (wrong xor bit) for received data
+    TBool Receive_IsParityError() __attribute__((optimize("O0")));
+
+    // Return true when there is frame error (too much bits) for received data
+    TBool Receive_IsFrameError() __attribute__((optimize("O0")));
+
+    // Return true when there is data overrun (we got bytes, but noone read them)
+    TBool Receive_IsDataOverrun() __attribute__((optimize("O0")));
   }
 }
 
 /*
   2024-10-25
   2024-10-26
+  2024-10-27
 */

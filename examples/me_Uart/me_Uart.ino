@@ -35,7 +35,7 @@ void RunTest()
 
   TUint_4 StartTime = millis();
 
-  TUint_2 NumLines = 180;
+  TUint_2 NumLines = 16;
   TUint_1 LineSize = 64; // 63 + 1 for newline
 
   for (TUint_2 Counter = 0; Counter < NumLines; ++Counter)
@@ -54,9 +54,19 @@ void RunTest()
   Console.Print(StopTime - StartTime);
   Console.Write("ms.");
   Console.EndLine();
+
+  Console.Print("Echo until newline..");
+
+  TUint_1 Byte;
+  do
+  {
+    while (!me_Uart::ReceiveByte(&Byte));
+    me_Uart::SendByte(Byte);
+  } while (Byte != 10);
 }
 
 /*
   2024-10-25
   2024-10-26
+  2024-10-27
 */
