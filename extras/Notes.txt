@@ -1,0 +1,42 @@
+(
+  It's not that hard.
+
+  As usually there is idle cycle "(for i = 0, N)()" to keep line
+  state long enough.
+
+  That <N> value is amount of 16-clocks ticks (or 8-clocks ticks for
+  double speed mode).
+
+  That <N> value is stored in 14 bits, so max(N) = 4095.
+  So maximum delay is 4096 * 16-clock ticks. 65536 ticks.
+  For 16 MHz it is near 4 ms. (4096 us to be precise.)
+
+  So lowest baud rate is near 250 bps (1000 / 4). Highest baud rate
+  is 1 Mbps (or 100 KB / s). Will transfer megabyte in ten seconds.
+  Not enough for porn but not bad actually.
+)
+
+(
+  WTF is "double speed"?!
+
+  How fuck we can send at double speed at 115200?
+
+  It's bit 1 at byte 192. Internally it divides idle loop delay by two.
+  So twofold value of loop counter is needed for same delay.
+  More speed tuning precision possible.
+
+  Also looks like "idle loop" is not really idle.
+
+  In normal mode it runs in 16 ticks. And takes 16 measurements. Middle
+  3 of them are used to determine bit value.
+
+  In double speed mode it runs in 8 ticks. And takes 8 measurements.
+  Same middle 3 are used for sampling.
+
+  So no much difference. Double mode doubles theoretical max speed,
+  and halves minimum possible speed. Less time granularity, so
+  theoretically better for matching announced speed. Theoretically
+  worse sampling quality, so more reading errors possible.
+
+  No much difference. I'll stick to "normal" mode.
+)

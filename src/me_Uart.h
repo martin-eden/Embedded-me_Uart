@@ -19,17 +19,27 @@
 
 namespace me_Uart
 {
-  class TUartChannel
-  {
-    private:
+  /*
+    UART communication core
+  */
 
-    public:
-      TBool Init(TUint_4 Speed);
-      TBool SendByte(TUint_1 Value);
-  };
+  // Set-up for given speed (no parity, 8 data bits, 1 stop bit)
+  TBool Init(TUint_4 Speed);
+
+  // Send byte
+  void SendByte(TUint_1 Value);
+
+  // Receive byte
+  TBool ReceiveByte(TUint_1 * Value);
 
   namespace Freetown
   {
+    // Calculate bit duration in microseconds for given speed
+    TUint_4 CalculateBitDuration_us(TUint_4 Speed_Bps);
+
+    // Set bit duration. Not all durations can be set
+    TBool SetBitDuration_us(TUint_4 BitDuration_us);
+
     // Set asynchronous UART mode
     void SetAsyncMode();
 
@@ -61,10 +71,10 @@ namespace me_Uart
     void EnableTransmitter();
 
     // Return true when transmitter is idle
-    TBool ReadyToTransmit();
+    TBool ReadyToTransmit() __attribute__((optimize("O0")));
 
     // Transmit data frame up to 8 bits in size
-    TBool TransmitFrame(TUint_1 Data);
+    void TransmitFrame(TUint_1 Data);
   }
 }
 

@@ -11,6 +11,7 @@
 
 #include <me_MemorySegment.h> // your time to shine, sweetie!
 #include <me_Bits.h>
+#include <Arduino.h>
 
 using namespace me_Uart;
 
@@ -20,61 +21,14 @@ using
   me_Bits::GetBit,
   me_Bits::SetBit;
 
-TBool TUartChannel::Init(
+TBool me_Uart::Init(
   TUint_4 Speed_Bps
 )
 {
-  /*
-    It's not that hard.
+  TUint_4 BitDuration_us = Freetown::CalculateBitDuration_us(Speed_Bps);
 
-    As usually there is idle cycle "(for i = 0, N)()" to keep line
-    state long enough.
-
-    That <N> value is amount of 16-clocks ticks (or 8-clocks ticks for
-    double speed mode).
-
-    That <N> value is stored in 14 bits, so max(N) = 4095.
-    So maximum delay is 4096 * 16-clock ticks. 65536 ticks.
-    For 16 MHz it is near 4 ms. (4096 us to be precise.)
-
-    So lowest baud rate is near 250 bps (1000 / 4). Highest baud rate
-    is 1 Mbps (or 100 KB / s). Will transfer megabyte in ten seconds.
-    Not enough for porn but not bad actually.
-  */
-
-  const TUint_4 MaxBps = F_CPU / 16;
-
-  // *_ucsra = 0;
-
-  /*
-    We can fit (MaxBps / SpeedBps) chunks
-
-    But we will round counter limit to nearest integer.
-    So (MaxBps + (SpeedBps/2)) / SpeedBps).
-
-    And we will subtract 1, cause zero is cool.
-    (And cause idle loop is from 0.)
-  */
-  TUint_4 BaudCounter_Limit =
-    (MaxBps + (Speed_Bps / 2)) / Speed_Bps - 1;
-
-  // Max value we can store for idle counter
-  TUint_2 CounterCapacity = (1 << 14) - 1;
-
-  // Speed is too slow. We can't handle slow speeds, lol
-  if (BaudCounter_Limit > CounterCapacity)
+  if (!Freetown::SetBitDuration_us(BitDuration_us))
     return false;
-
-  // 14-bit value to store counter max value
-  const TMemorySegment Counter_Limit =
-    FromAddrSize(196, 2);
-
-  /*
-    Hardware magic occurs at writing low byte of counter.
-    So we're writing high byte first.
-  */
-  Counter_Limit.Bytes[1] = (BaudCounter_Limit >> 8) & 0xFF;
-  Counter_Limit.Bytes[0] = BaudCounter_Limit & 0xFF;
 
   Freetown::SetAsyncMode();
   Freetown::SetOneStopBit();
@@ -91,14 +45,26 @@ TBool TUartChannel::Init(
   return true;
 }
 
-TBool TUartChannel::SendByte(
+void me_Uart::SendByte(
   TUint_1 Value
 )
 {
-  return Freetown::TransmitFrame(Value);
+  while (!Freetown::ReadyToTransmit())
+    ;
+
+  Freetown::TransmitFrame(Value);
+}
+
+TBool me_Uart::ReceiveByte(
+  TUint_1 * Value __attribute__((unused))
+)
+{
+  // Not implemented yet
+  return false;
 }
 
 // ( Freetown
+
 const TMemorySegment StatusReg =
   FromAddrSize(95, 1);
 const TMemorySegment UartStatusReg_1 =
@@ -107,11 +73,98 @@ const TMemorySegment UartStatusReg_2 =
   FromAddrSize(193, 1);
 const TMemorySegment UartStatusReg_3 =
   FromAddrSize(194, 1);
+const TMemorySegment Counter_Limit =
+  FromAddrSize(196, 2);
 const TMemorySegment UartData =
   FromAddrSize(198, 1);
 
 // Stolen from [avr/interrupt.h]
 # define cli()  __asm__ __volatile__ ("cli" ::: "memory")
+
+// Calculate bit duration in microseconds
+TUint_4 Freetown::CalculateBitDuration_us(
+  TUint_4 Speed_Bps
+)
+{
+  /*
+    Explaining formulae
+
+      1 second = 1000000 microseconds
+
+      115200 bits are transferred in that duration
+
+      What is duration of one bit?
+
+      1000000 / 115200 ~= 8.68 ~= 8
+
+      8 * 115200 = 921600 // 8% error
+      9 * 115200 = 1036800 // 3 % error
+
+      So we'll do rounding by adding half of 115200 to 1000000:
+
+      1057600 / 115200 ~= 9.18 ~= 9
+  */
+
+  return
+    (1000000 + Speed_Bps / 2) / Speed_Bps;
+}
+
+// Set bit duration. Not all durations can be set
+TBool Freetown::SetBitDuration_us(
+  TUint_4 BitDuration_us
+)
+{
+  /*
+    Things are more hairy at hardware level.
+
+    There is idle cycle (for i = 0, N)(wait 16 ticks).
+    It's needed to keep line stable for that time.
+    <N> is counter limit value that is stored in
+    (God forgive me for using that names!) in
+    UBRR0H and UBRR0L.
+
+    That's just 14-bits word for <N>.
+
+    For "double speed" wait is 8 ticks. But we're sticking to
+    "normal" speed.
+
+    We're converting duration in microseconds to that counter
+    value and writing it.
+
+    (N + 1) * 16 * TickDuration_us == BitDuration_us
+    N == (BitDuration_us / (16 * TickDuration_us)) - 1
+
+    TickDuration_us = 1 / CpuTicksPerSecond * 1000000 // = 0.0625 us for 16 MHz
+
+    Too bad for integer calculations. So we're wrapping all in one
+    expression:
+
+      N + 1 = BitDuration_us / (16 * (1 / F_CPU) * 1000000)))
+        = BitDuration_us / (16000000 / F_CPU)
+        = BitDuration_us * F_CPU / 16000000
+  */
+
+  const TUint_1 TicksInCycle = 16;
+
+  TUint_4 CounterValue =
+    BitDuration_us * F_CPU / (TicksInCycle * 1000000) - 1;
+
+  // Max value we can store for idle counter
+  TUint_2 CounterCapacity = (1 << 14) - 1;
+
+  // Speed is too slow. We can't handle slow speeds, lol
+  if (CounterValue > CounterCapacity)
+    return false;
+
+  /*
+    Hardware magic occurs at writing low byte of counter.
+    So we're writing high byte first.
+  */
+  Counter_Limit.Bytes[1] = (CounterValue >> 8) & 0xFF;
+  Counter_Limit.Bytes[0] = CounterValue & 0xFF;
+
+  return true;
+}
 
 // Set asynchronous UART mode
 void Freetown::SetAsyncMode()
@@ -233,21 +286,11 @@ void Freetown::EnableTransmitter()
   Data frame size can be 5, 6, 7, 8, and 9 bits.
   Transmitting 9-bit frames requires more work and not needed.
 */
-TBool Freetown::TransmitFrame(
+void Freetown::TransmitFrame(
   TUint_1 Data
 )
 {
-  if (!ReadyToTransmit())
-    return false;
-
-  TUint_1 OrigSreg = StatusReg.Bytes[0];
-  cli();
-
   UartData.Bytes[0] = Data;
-
-  StatusReg.Bytes[0] = OrigSreg;
-
-  return true;
 }
 
 // Return true when transmitter is idle
@@ -255,13 +298,14 @@ TBool Freetown::ReadyToTransmit()
 {
   // 1 - buffer is empty. Register 1, offset 5.
 
-  const TUint_1 TransmitBufferIsEmpty_BitOffs = 5;
+  const TUint_1 BitOffs = 5;
 
-  return GetBit(UartStatusReg_1.Bytes[0], TransmitBufferIsEmpty_BitOffs);
+  return GetBit(UartStatusReg_1.Bytes[0], BitOffs);
 }
 
 // ) Freetown
 
 /*
   2024-10-25
+  2024-10-26
 */
