@@ -38,5 +38,5 @@
   theoretically better for matching announced speed. Theoretically
   worse sampling quality, so more reading errors possible.
 
-  No much difference. I'll stick to "normal" mode.
+  No much difference. I'll stick to "normal" mode for now.
 )
