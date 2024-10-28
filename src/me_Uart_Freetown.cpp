@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-27
+  Last mod.: 2024-10-29
 */
 
 /*
@@ -107,7 +107,7 @@ TBool Freetown::SetBitDuration_us(
     Too bad for integer calculations. So we're wrapping all in one
     expression:
 
-      N + 1 = BitDuration_us / (16 * (1 / F_CPU) * 1000000)))
+      N + 1 = BitDuration_us / (16 * (1 / F_CPU) * 1000000)
         = BitDuration_us / (16000000 / F_CPU)
         = BitDuration_us * F_CPU / 16000000
   */
