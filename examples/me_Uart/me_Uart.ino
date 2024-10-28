@@ -55,14 +55,14 @@ void RunTest()
   Console.Write("ms.");
   Console.EndLine();
 
-  Console.Print("Echo until newline..");
+  Console.Print("Echo until '~' character..");
 
   TUint_1 Byte;
   do
   {
-    while (!me_Uart::ReceiveByte(&Byte));
+    while (!me_Uart::AwaitByte(&Byte, 15));
     me_Uart::SendByte(Byte);
-  } while (Byte != 10);
+  } while (Byte != '~');
 }
 
 /*

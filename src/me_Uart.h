@@ -6,9 +6,9 @@
 */
 
 /*
-  Here is unsophisticated design. Three functions.
+  Here is unsophisticated design. Three core functions.
 
-  We are not using external buffers for transmission or receiving.
+  We are not using external buffers for transmission and receiving.
 */
 
 #pragma once
@@ -18,13 +18,25 @@
 namespace me_Uart
 {
   // Set-up for given speed (no parity, 8 data bits, 1 stop bit)
-  TBool Init(TUint_4 Speed);
+  TBool Init(
+    TUint_4 Speed
+  );
 
   // Send byte
-  void SendByte(TUint_1 Value);
+  void SendByte(
+    TUint_1 Value
+  );
 
   // Receive byte
-  TBool ReceiveByte(TUint_1 * Value);
+  TBool ReceiveByte(
+    TUint_1 * Value
+  );
+
+  // Await byte for given time
+  TBool AwaitByte(
+    TUint_1 * Value,
+    TUint_2 MaxWaitTime_ms
+  );
 
   namespace Freetown
   {

@@ -38,8 +38,6 @@ using
 
 // ( Freetown
 
-const TMemorySegment StatusReg =
-  FromAddrSize(95, 1);
 const TMemorySegment UartStatusReg_1 =
   FromAddrSize(192, 1);
 const TMemorySegment UartStatusReg_2 =
