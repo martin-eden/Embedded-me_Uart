@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-27
+  Last mod.: 2024-10-29
 */
 
 /*
@@ -94,11 +94,11 @@ TBool me_Uart::AwaitByte(
 
   while (true)
   {
-    if (millis() >= WaitStopTime)
-      return false;
-
     if (ReceiveByte(Value))
       return true;
+
+    if (millis() >= WaitStopTime)
+      return false;
   }
 }
 
