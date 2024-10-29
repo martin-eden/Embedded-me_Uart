@@ -18,33 +18,40 @@
 namespace me_Uart
 {
   // Set-up for given speed (no parity, 8 data bits, 1 stop bit)
-  TBool Init(
-    TUint_4 Speed
-  );
+  TBool Init(TUint_4 Speed);
 
   // Send byte
-  void SendByte(
-    TUint_1 Value
-  );
+  void SendByte(TUint_1 Value);
 
   // Receive byte
-  TBool ReceiveByte(
-    TUint_1 * Value
-  );
+  TBool ReceiveByte(TUint_1 * Value);
 
   // Await byte for given time
-  TBool AwaitByte(
-    TUint_1 * Value,
-    TUint_2 MaxWaitTime_ms
-  );
+  TBool AwaitByte(TUint_1 * Value, TUint_2 MaxWaitTime_ms);
 
   namespace Freetown
   {
+    // ( SetSpeed() and servants
+
+    // Set transceiver speed
+    TBool SetSpeed(TUint_4 Speed_Bps);
+
     // Calculate bit duration in microseconds for given speed
     TUint_4 CalculateBitDuration_us(TUint_4 Speed_Bps);
 
+    // Calculate baud counter limit
+    TUint_2 FromMicros_ut(TUint_4 BitDuration_us, TBool UseDoubleSpeed);
+
+    // )
+
     // Set bit duration. Not all durations can be set
-    TBool SetBitDuration_us(TUint_4 BitDuration_us);
+    TBool SetBitDuration_ut(TUint_2 BitDuration_ut);
+
+    // Use normal transceiver speed
+    void SetNormalSpeed();
+
+    // Use double transceiver speed
+    void SetDoubleSpeed();
 
     // Set asynchronous UART mode
     void SetAsyncMode();

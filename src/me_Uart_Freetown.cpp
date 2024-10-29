@@ -6,19 +6,16 @@
 */
 
 /*
-  My lovely anarchistic society!
+  Greasers, a lot of them
 
-  Lot of functions. But they do no call each other.
+  They don't call each other. No awareness. They care only about
+  correctly reading/writing designated memory location.
 
-  Two mathematical functions. They care about values in SI.
+  I could write "sbi" or direct assignments. I could embed them into
+  code. I chose not to.
 
-  One calculates bit duration is microseconds. Other have to convert
-  microseconds to hardwired loop "ticks".
-
-  All others care only about reading/writing designated memory location.
-  I could write "sbi" or direct assignments. I chose not to. Names are
-  better than comments to uncomprehensible code. Comments are just poor
-  man's names.
+  Names are better than comments to uncomprehensible code.
+  Comments are just poor man's names.
 */
 
 #include "me_Uart.h"
@@ -49,89 +46,47 @@ const TMemorySegment Counter_Limit =
 const TMemorySegment UartBuffer =
   FromAddrSize(198, 1);
 
-// Calculate bit duration in microseconds
-TUint_4 Freetown::CalculateBitDuration_us(
-  TUint_4 Speed_Bps
+// Set bit duration. Custom unit. Not all durations can be set
+TBool Freetown::SetBitDuration_ut(
+  TUint_2 Value
 )
 {
-  /*
-    Explaining formulae
+  // Value is 14-bit word
 
-      1 second = 1000000 microseconds
+  // Max value we can store
+  TUint_2 MaxValue = (1 << 14) - 1;
 
-      115200 bits are transferred in that duration
-
-      What is duration of one bit?
-
-      1000000 / 115200 ~= 8.68 ~= 8
-
-      8 * 115200 = 921600 // 8% error
-      9 * 115200 = 1036800 // 3 % error
-
-      So we'll do rounding by adding half of 115200 to 1000000:
-
-      1057600 / 115200 ~= 9.18 ~= 9
-  */
-
-  return
-    (1000000 + Speed_Bps / 2) / Speed_Bps;
-}
-
-// Set bit duration. Not all durations can be set
-TBool Freetown::SetBitDuration_us(
-  TUint_4 BitDuration_us
-)
-{
-  /*
-    Things are more hairy at hardware level.
-
-    There is idle cycle (for i = 0, N)(wait 16 ticks).
-    It's needed to keep line stable for that time.
-    <N> is counter limit value that is stored in
-    (God forgive me for using that names!) in
-    UBRR0H and UBRR0L.
-
-    That's just 14-bits word for <N>.
-
-    For "double speed" wait is 8 ticks. But we're sticking to
-    "normal" speed.
-
-    We're converting duration in microseconds to that counter
-    value and writing it.
-
-    (N + 1) * 16 * TickDuration_us == BitDuration_us
-    N == (BitDuration_us / (16 * TickDuration_us)) - 1
-
-    TickDuration_us = 1 / CpuTicksPerSecond * 1000000 // = 0.0625 us for 16 MHz
-
-    Too bad for integer calculations. So we're wrapping all in one
-    expression:
-
-      N + 1 = BitDuration_us / (16 * (1 / F_CPU) * 1000000)
-        = BitDuration_us / (16000000 / F_CPU)
-        = BitDuration_us * F_CPU / 16000000
-  */
-
-  const TUint_1 TicksInCycle = 16;
-
-  TUint_4 CounterValue =
-    BitDuration_us * F_CPU / (TicksInCycle * 1000000) - 1;
-
-  // Max value we can store for idle counter
-  TUint_2 CounterCapacity = (1 << 14) - 1;
-
-  // Speed is too slow. We can't handle slow speeds, lol
-  if (CounterValue > CounterCapacity)
+  if (Value > MaxValue)
     return false;
 
   /*
     Hardware magic occurs at writing low byte of counter.
     So we're writing high byte first.
   */
-  Counter_Limit.Bytes[1] = (CounterValue >> 8) & 0xFF;
-  Counter_Limit.Bytes[0] = CounterValue & 0xFF;
+  Counter_Limit.Bytes[1] = (Value >> 8) & 0xFF;
+  Counter_Limit.Bytes[0] = Value & 0xFF;
 
   return true;
+}
+
+// Use normal transceiver speed
+void Freetown::SetNormalSpeed()
+{
+  // Value 0. Register 1, offset 1
+
+  const TUint_1 BitOffs = 1;
+
+  SetBit(&UartStatusReg_1.Bytes[0], BitOffs, false);
+}
+
+// Use double transceiver speed
+void Freetown::SetDoubleSpeed()
+{
+  // Value 1. Register 1, offset 1
+
+  const TUint_1 BitOffs = 1;
+
+  SetBit(&UartStatusReg_1.Bytes[0], BitOffs, true);
 }
 
 // Set asynchronous UART mode
@@ -261,29 +216,29 @@ void Freetown::EnableTransmitter()
   SetBit(&UartStatusReg_2.Bytes[0], BitOffs, true);
 }
 
-/*
-  Put byte to transceiver buffer
-
-  Writing to this memory location updates flags and
-  initiates hardware transmitter.
-*/
+// Put byte to transceiver buffer
 void Freetown::Buffer_PutByte(
   TUint_1 Data
 )
 {
+  /*
+    Writing to this memory location updates flags and
+    initiates hardware transmitter.
+  */
+
   UartBuffer.Bytes[0] = Data;
 }
 
-/*
-  Extract byte from transceiver buffer
-
-  Reading this memory location updates flags and
-  initiates hardware receiver.
-*/
+// Extract byte from transceiver buffer
 void Freetown::Buffer_ExtractByte(
   TUint_1 * Data
 )
 {
+  /*
+    Reading this memory location updates flags and
+    initiates hardware receiver.
+  */
+
   *Data = UartBuffer.Bytes[0];
 }
 

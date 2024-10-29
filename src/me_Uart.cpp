@@ -23,9 +23,7 @@ TBool me_Uart::Init(
   TUint_4 Speed_Bps
 )
 {
-  TUint_4 BitDuration_us = Freetown::CalculateBitDuration_us(Speed_Bps);
-
-  if (!Freetown::SetBitDuration_us(BitDuration_us))
+  if (!Freetown::SetSpeed(Speed_Bps))
     return false;
 
   Freetown::SetAsyncMode();
