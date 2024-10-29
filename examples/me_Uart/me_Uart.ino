@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-26
+  Last mod.: 2024-10-29
 */
 
 #include <me_Uart.h>
@@ -13,7 +13,7 @@
 
 void setup()
 {
-  me_Uart::Init(me_UartSpeeds::Arduino_Normal_Bps);
+  me_Uart::Init(me_UartSpeeds::Bps_250k);
 
   Console.Print("[me_Uart] Start.");
   RunTest();
