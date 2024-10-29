@@ -13,11 +13,7 @@
 
 void setup()
 {
-  me_Uart::Init(me_UartSpeeds::Bps_250k);
-
-  Console.Print("[me_Uart] Start.");
   RunTest();
-  Console.Print("[me_Uart] Done.");
 }
 
 void loop()
@@ -28,10 +24,19 @@ void loop()
 
 void RunTest()
 {
-  Console.Print("If you can see this it means [me_Uart] works");
-  Console.Print("for transmission.");
+  TUint_4 Speed_Bps = me_UartSpeeds::Bps_250k;
+
+  me_Uart::Init(Speed_Bps);
+
+  Console.Print("[me_Uart] Start.");
+
+  Console.Write("Speed is");
+  Console.Print(Speed_Bps);
+  Console.Write("baud.");
+  Console.EndLine();
+
   Console.Print("");
-  Console.Print("We'll print lot of lines to measure transfer time.");
+  Console.Print("We'll print a lot of lines to measure transfer time.");
 
   TUint_4 StartTime = millis();
 
@@ -63,6 +68,8 @@ void RunTest()
     while (!me_Uart::AwaitByte(&Byte, 15));
     me_Uart::SendByte(Byte);
   } while (Byte != '~');
+
+  Console.Print("[me_Uart] Done.");
 }
 
 /*
