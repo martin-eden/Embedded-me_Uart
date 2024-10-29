@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-27
+  Last mod.: 2024-10-29
 */
 
 /*
@@ -93,16 +93,10 @@ namespace me_Uart
     void Buffer_ExtractByte(TUint_1 * Data);
 
     // Return true when there is data in receive buffer
-    TBool ReceivedByte() __attribute__((optimize("O0")));
+    TBool ReceivedByte() __attribute__((optimize("O1")));
 
-    // Return true if there is parity error (wrong xor bit) for received data
-    TBool Receive_IsParityError() __attribute__((optimize("O0")));
-
-    // Return true when there is frame error (too much bits) for received data
-    TBool Receive_IsFrameError() __attribute__((optimize("O0")));
-
-    // Return true when there is data overrun (we got bytes, but noone read them)
-    TBool Receive_IsDataOverrun() __attribute__((optimize("O0")));
+    // Return true if frame is received with errors
+    TBool FrameHasErrors() __attribute__((optimize("O1")));
   }
 }
 
@@ -110,4 +104,5 @@ namespace me_Uart
   2024-10-25
   2024-10-26
   2024-10-27
+  2024-10-29
 */

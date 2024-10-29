@@ -273,34 +273,31 @@ TBool Freetown::ReceivedByte()
   return GetBit(UartStatusReg_1.Bytes[0], BitOffs);
 }
 
-// Return true if there is parity error (wrong xor bit) for received data
-TBool Freetown::Receive_IsParityError()
+// Return true if frame is received with errors
+TBool Freetown::FrameHasErrors()
 {
-  // Register 1, offset 2. Read-only
+  // Value should be 000. Register 1, offset 2
 
-  const TUint_1 BitOffs = 2;
+  /*
+    Original caller's code was
 
-  return GetBit(UartStatusReg_1.Bytes[0], BitOffs);
-}
+      if (
+        Freetown::Receive_IsParityError() ||
+        Freetown::Receive_IsFrameError() ||
+        Freetown::Receive_IsDataOverrun()
+      )
 
-// Return true when there is frame error (too much bits) for received data
-TBool Freetown::Receive_IsFrameError()
-{
-  // Register 1, offset 4. Read-only
+    Those three calls was taking too long starting at 250K speed.
 
-  const TUint_1 BitOffs = 4;
+    Using this shortcut passes 250K speed but still too slow
+    for 500K speed.
+  */
 
-  return GetBit(UartStatusReg_1.Bytes[0], BitOffs);
-}
+  const TUint_1 BitfieldOffs = 2;
 
-// Return true when there is data overrun (we got bytes, but noone read them)
-TBool Freetown::Receive_IsDataOverrun()
-{
-  // Register 1, offset 3. Read-only
+  const TUint_1 Mask = (0x7 << BitfieldOffs);
 
-  const TUint_1 BitOffs = 3;
-
-  return GetBit(UartStatusReg_1.Bytes[0], BitOffs);
+  return (UartStatusReg_1.Bytes[0] & Mask) != 0;
 }
 
 // ) Freetown
@@ -309,4 +306,5 @@ TBool Freetown::Receive_IsDataOverrun()
   2024-10-25
   2024-10-26
   2024-10-27
+  2024-10-29
 */

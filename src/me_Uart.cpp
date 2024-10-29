@@ -61,18 +61,14 @@ TBool me_Uart::ReceiveByte(
   if (!Freetown::ReceivedByte())
     return false;
 
+  /*
+    There is hardware magic at accessing transceiver buffer.
+    Reading or writing it updates flags. So flags must be read first.
+  */
+
   // Received with errors. Will read but discard
-  if (
-    Freetown::Receive_IsParityError() ||
-    Freetown::Receive_IsFrameError() ||
-    Freetown::Receive_IsDataOverrun()
-  )
+  if (Freetown::FrameHasErrors())
   {
-    /*
-      There is hardware magic at accessing transceiver buffer.
-      Reading or writing it updates flags.
-      So flags must be read first.
-    */
     Freetown::Buffer_ExtractByte(Value);
 
     return false;
