@@ -29,10 +29,9 @@ Some `for()` to verify output speed. Then echo everything until
 
 ```
 [me_Uart] Start.
-If you can see this it means [me_Uart] works
-for transmission.
+Speed is 0000250000 baud.
 
-We'll print lot of lines to measure transfer time.
+We'll print a lot of lines to measure transfer time.
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
@@ -49,10 +48,10 @@ We'll print lot of lines to measure transfer time.
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-Transferred 01024 bytes in 0000000041 ms.
+Transferred 01024 bytes in 0000000042 ms.
 Echo until '~' character..
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{~[me_Uart] Done.
+kfjdshfdsjkfdshjklgjklsdfhgfdskljghdflkjgdfhlkjghskljhjkfdkjdhsajklfhdsakjlfhjkaljkfdslkhafhkjlsaklhj~
+kfjdshfdsjkfdshjklgjklsdfhgfdskljghdflkjgdfhlkjghskljhjkfdkjdhsajklfhdsakjlfhjkaljkfdslkhafhkjlsaklhj~[me_Uart] Done.
 ```
 
 ## Requirements
