@@ -48,23 +48,34 @@ const TMemorySegment UartBuffer =
 
 // Set bit duration. Custom unit. Not all durations can be set
 TBool Freetown::SetBitDuration_ut(
-  TUint_2 Value
+  TUint_2 BitDuration_ut
 )
 {
-  // Value is 14-bit word
+  // Memory value is 14-bit word
+
+  /*
+    We're setting limit value for (0, N) "for" loop.
+
+    It will always run at least once.
+  */
+
+  if (BitDuration_ut == 0)
+    return false;
+
+  TUint_2 Limit = BitDuration_ut - 1;
 
   // Max value we can store
-  TUint_2 MaxValue = (1 << 14) - 1;
+  TUint_2 MaxLimit = (1 << 14) - 1;
 
-  if (Value > MaxValue)
+  if (Limit > MaxLimit)
     return false;
 
   /*
     Hardware magic occurs at writing low byte of counter.
     So we're writing high byte first.
   */
-  Counter_Limit.Bytes[1] = (Value >> 8) & 0xFF;
-  Counter_Limit.Bytes[0] = Value & 0xFF;
+  Counter_Limit.Bytes[1] = (Limit >> 8) & 0xFF;
+  Counter_Limit.Bytes[0] = Limit & 0xFF;
 
   return true;
 }

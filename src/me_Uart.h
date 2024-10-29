@@ -31,16 +31,13 @@ namespace me_Uart
 
   namespace Freetown
   {
-    // ( SetSpeed() and servants
+    // ( SetSpeed() and servant
 
     // Set transceiver speed
     TBool SetSpeed(TUint_4 Speed_Bps);
 
-    // Calculate bit duration in microseconds for given speed
-    TUint_4 CalculateBitDuration_us(TUint_4 Speed_Bps);
-
-    // Calculate baud counter limit
-    TUint_2 FromMicros_ut(TUint_4 BitDuration_us, TBool UseDoubleSpeed);
+    // Calculate bit duration in hardware time units
+    TUint_4 CalculateBitDuration_ut(TUint_4 Speed_Bps, TBool UseDoubleSpeed);
 
     // )
 
