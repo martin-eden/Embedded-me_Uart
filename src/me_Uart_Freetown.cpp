@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-29
+  Last mod.: 2024-10-30
 */
 
 /*
@@ -22,29 +22,24 @@
 
 #include <me_BaseTypes.h>
 
-#include <me_MemorySegment.h> // your time to shine, sweetie!
 #include <me_Bits.h>
 
 using namespace me_Uart;
 
 using
-  me_MemorySegment::TMemorySegment,
-  me_MemorySegment::Freetown::FromAddrSize,
   me_Bits::GetBit,
   me_Bits::SetBit;
 
 // ( Freetown
 
-const TMemorySegment UartStatusReg_1 =
-  FromAddrSize(192, 1);
-const TMemorySegment UartStatusReg_2 =
-  FromAddrSize(193, 1);
-const TMemorySegment UartStatusReg_3 =
-  FromAddrSize(194, 1);
-const TMemorySegment Counter_Limit =
-  FromAddrSize(196, 2);
-const TMemorySegment UartBuffer =
-  FromAddrSize(198, 1);
+TUint_1 * UartStatusReg_1 = (TUint_1 *) 192;
+TUint_1 * UartStatusReg_2 = (TUint_1 *) 193;
+TUint_1 * UartStatusReg_3 = (TUint_1 *) 194;
+
+TUint_1 * UartBuffer = (TUint_1 *) 198;
+
+TUint_1 * Counter_Limit_Low = (TUint_1 *) 196;
+TUint_1 * Counter_Limit_High = (TUint_1 *) 197;
 
 // Set bit duration. Custom unit. Not all durations can be set
 TBool Freetown::SetBitDuration_ut(
@@ -74,8 +69,8 @@ TBool Freetown::SetBitDuration_ut(
     Hardware magic occurs at writing low byte of counter.
     So we're writing high byte first.
   */
-  Counter_Limit.Bytes[1] = (Limit >> 8) & 0xFF;
-  Counter_Limit.Bytes[0] = Limit & 0xFF;
+  *Counter_Limit_High = (Limit >> 8) & 0xFF;
+  *Counter_Limit_Low = Limit & 0xFF;
 
   return true;
 }
@@ -87,7 +82,7 @@ void Freetown::SetNormalSpeed()
 
   const TUint_1 BitOffs = 1;
 
-  SetBit(&UartStatusReg_1.Bytes[0], BitOffs, false);
+  SetBit(UartStatusReg_1, BitOffs, false);
 }
 
 // Use double transceiver speed
@@ -97,7 +92,7 @@ void Freetown::SetDoubleSpeed()
 
   const TUint_1 BitOffs = 1;
 
-  SetBit(&UartStatusReg_1.Bytes[0], BitOffs, true);
+  SetBit(UartStatusReg_1, BitOffs, true);
 }
 
 // Set asynchronous UART mode
@@ -107,8 +102,8 @@ void Freetown::SetAsyncMode()
 
   const TUint_1 BitfieldOffs = 6;
 
-  UartStatusReg_3.Bytes[0] =
-    UartStatusReg_3.Bytes[0] & ~(0x03 << BitfieldOffs);
+  *UartStatusReg_3 =
+    *UartStatusReg_3 & ~(0x03 << BitfieldOffs);
 
   ClearPolarityBit();
 }
@@ -125,7 +120,7 @@ void Freetown::ClearPolarityBit()
 
   const TUint_1 BitOffs = 0;
 
-  SetBit(&UartStatusReg_3.Bytes[0], BitOffs, false);
+  SetBit(UartStatusReg_3, BitOffs, false);
 }
 
 // Set one stop bit in a frame
@@ -135,7 +130,7 @@ void Freetown::SetOneStopBit()
 
   const TUint_1 BitOffs = 3;
 
-  SetBit(&UartStatusReg_3.Bytes[0], BitOffs, false);
+  SetBit(UartStatusReg_3, BitOffs, false);
 }
 
 // Set no parity
@@ -145,8 +140,8 @@ void Freetown::SetNoParity()
 
   const TUint_1 BitfieldOffs = 4;
 
-  UartStatusReg_3.Bytes[0] =
-    UartStatusReg_3.Bytes[0] & ~(0x03 << BitfieldOffs);
+  *UartStatusReg_3 =
+    *UartStatusReg_3 & ~(0x03 << BitfieldOffs);
 }
 
 // Set frame size to 8 bits
@@ -161,10 +156,10 @@ void Freetown::Set8BitsFrame()
   const TUint_1 Bit3_BitOffs = 2;
   const TUint_1 BitfieldOffs = 1;
 
-  SetBit(&UartStatusReg_2.Bytes[0], Bit3_BitOffs, false);
+  SetBit(UartStatusReg_2, Bit3_BitOffs, false);
 
-  UartStatusReg_3.Bytes[0] =
-    UartStatusReg_3.Bytes[0] | (0x03 << BitfieldOffs);
+  *UartStatusReg_3 =
+    *UartStatusReg_3 | (0x03 << BitfieldOffs);
 }
 
 // Disable interrupt when data frame received
@@ -174,7 +169,7 @@ void Freetown::DisableOnReceiveCompleteInterrupt()
 
   const TUint_1 BitOffs = 7;
 
-  SetBit(&UartStatusReg_2.Bytes[0], BitOffs, false);
+  SetBit(UartStatusReg_2, BitOffs, false);
 }
 
 // Disable interrupt when data frame sent
@@ -184,7 +179,7 @@ void Freetown::DisableOnTransmitCompleteInterrupt()
 
   const TUint_1 BitOffs = 6;
 
-  SetBit(&UartStatusReg_2.Bytes[0], BitOffs, false);
+  SetBit(UartStatusReg_2, BitOffs, false);
 }
 
 // Disable interrupt when no data
@@ -194,7 +189,7 @@ void Freetown::DisableOnEmptyBufferInterrupt()
 
   const TUint_1 BitOffs = 5;
 
-  SetBit(&UartStatusReg_2.Bytes[0], BitOffs, false);
+  SetBit(UartStatusReg_2, BitOffs, false);
 }
 
 // Disable receiver
@@ -204,7 +199,7 @@ void Freetown::DisableReceiver()
 
   const TUint_1 BitOffs = 4;
 
-  SetBit(&UartStatusReg_2.Bytes[0], BitOffs, false);
+  SetBit(UartStatusReg_2, BitOffs, false);
 }
 
 // Enable receiver
@@ -214,7 +209,7 @@ void Freetown::EnableReceiver()
 
   const TUint_1 BitOffs = 4;
 
-  SetBit(&UartStatusReg_2.Bytes[0], BitOffs, true);
+  SetBit(UartStatusReg_2, BitOffs, true);
 }
 
 // Enable transmitter
@@ -224,7 +219,7 @@ void Freetown::EnableTransmitter()
 
   const TUint_1 BitOffs = 3;
 
-  SetBit(&UartStatusReg_2.Bytes[0], BitOffs, true);
+  SetBit(UartStatusReg_2, BitOffs, true);
 }
 
 // Put byte to transceiver buffer
@@ -237,7 +232,7 @@ void Freetown::Buffer_PutByte(
     initiates hardware transmitter.
   */
 
-  UartBuffer.Bytes[0] = Data;
+  *UartBuffer = Data;
 }
 
 // Extract byte from transceiver buffer
@@ -250,7 +245,7 @@ void Freetown::Buffer_ExtractByte(
     initiates hardware receiver.
   */
 
-  *Data = UartBuffer.Bytes[0];
+  *Data = *UartBuffer;
 }
 
 // Return true when transmitter is idle
@@ -260,7 +255,7 @@ TBool Freetown::ReadyToTransmit()
 
   const TUint_1 BitOffs = 5;
 
-  return GetBit(UartStatusReg_1.Bytes[0], BitOffs);
+  return GetBit(*UartStatusReg_1, BitOffs);
 }
 
 // Return true when there is data in receive buffer
@@ -270,7 +265,7 @@ TBool Freetown::ReceivedByte()
 
   const TUint_1 BitOffs = 7;
 
-  return GetBit(UartStatusReg_1.Bytes[0], BitOffs);
+  return GetBit(*UartStatusReg_1, BitOffs);
 }
 
 // Return true if frame is received with errors
@@ -297,7 +292,7 @@ TBool Freetown::FrameHasErrors()
 
   const TUint_1 Mask = (0x7 << BitfieldOffs);
 
-  return (UartStatusReg_1.Bytes[0] & Mask) != 0;
+  return (*UartStatusReg_1 & Mask) != 0;
 }
 
 // ) Freetown
