@@ -58,21 +58,17 @@ TBool me_Uart::ReceiveByte(
   TUint_1 * Value
 )
 {
-  if (!Freetown::ReceivedByte())
-    return false;
-
   /*
     There is hardware magic at accessing transceiver buffer.
     Reading or writing it updates flags. So flags must be read first.
   */
 
   // Received with errors. Will read but discard
-  if (Freetown::FrameHasErrors())
-  {
+  while (Freetown::FrameHasErrors())
     Freetown::Buffer_ExtractByte(Value);
 
+  if (!Freetown::ReceivedByte())
     return false;
-  }
 
   Freetown::Buffer_ExtractByte(Value);
 
