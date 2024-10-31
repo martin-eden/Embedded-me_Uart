@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-30
+  Last mod.: 2024-10-31
 */
 
 /*
@@ -111,8 +111,9 @@ void Freetown::SetAsyncMode()
 /*
   Clear polarity bit
 
-  Polarity is synchronous mode stuff. For async mode
-  this bit should be set to zero.
+  Polarity is synchronous mode stuff.
+
+  For async mode this bit should be set to zero.
 */
 void Freetown::ClearPolarityBit()
 {
@@ -282,10 +283,14 @@ TBool Freetown::FrameHasErrors()
         Freetown::Receive_IsDataOverrun()
       )
 
-    Those three calls was taking too long starting at 250K speed.
+    Those three calls were taking too long starting at 250K speed.
 
-    Using this shortcut passes 250K speed but still too slow
-    for 500K speed.
+    Using this shortcut passes 250K speed.
+
+    Speed blocker above 250K speed is not this function
+    but timer interrupt.
+
+    Without interrupts loopback code works at 1M.
   */
 
   const TUint_1 BitfieldOffs = 2;
