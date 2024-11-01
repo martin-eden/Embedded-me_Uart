@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-31
+  Last mod.: 2024-11-01
 */
 
 /*
@@ -213,6 +213,16 @@ void Freetown::EnableReceiver()
   SetBit(UartStatusReg_2, BitOffs, true);
 }
 
+// Disable transmitter
+void Freetown::DisableTransmitter()
+{
+  // Value 0. Register 2, offset 3
+
+  const TUint_1 BitOffs = 3;
+
+  SetBit(UartStatusReg_2, BitOffs, false);
+}
+
 // Enable transmitter
 void Freetown::EnableTransmitter()
 {
@@ -307,4 +317,5 @@ TBool Freetown::FrameHasErrors()
   2024-10-26
   2024-10-27
   2024-10-29
+  2024-11-01
 */

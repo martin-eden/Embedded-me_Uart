@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-29
+  Last mod.: 2024-11-01
 */
 
 /*
@@ -80,6 +80,9 @@ namespace me_Uart
     // Enable receiver
     void EnableReceiver();
 
+    // Disable transmitter
+    void DisableTransmitter();
+
     // Enable transmitter
     void EnableTransmitter();
 
@@ -105,4 +108,5 @@ namespace me_Uart
   2024-10-26
   2024-10-27
   2024-10-29
+  2024-11-01
 */
