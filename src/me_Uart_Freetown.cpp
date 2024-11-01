@@ -285,22 +285,13 @@ TBool Freetown::FrameHasErrors()
   // Value should be 000. Register 1, offset 2
 
   /*
-    Original caller's code was
+    There are three error flags: bad parity, wrong length and
+    buffer overflow. Originally there was getter for each flag.
+    But at 250K making three calls taking too long. So this
+    union function.
 
-      if (
-        Freetown::Receive_IsParityError() ||
-        Freetown::Receive_IsFrameError() ||
-        Freetown::Receive_IsDataOverrun()
-      )
-
-    Those three calls were taking too long starting at 250K speed.
-
-    Using this shortcut passes 250K speed.
-
-    Speed blocker above 250K speed is not this function
-    but timer interrupt.
-
-    Without interrupts loopback code works at 1M.
+    Over 250K speed blocker is timer interrupt. Without interrupts
+    transmitter works at 1M.
   */
 
   const TUint_1 BitfieldOffs = 2;
