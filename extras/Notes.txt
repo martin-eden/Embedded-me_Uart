@@ -33,10 +33,15 @@
   In double speed mode it runs in 8 ticks. And takes 8 measurements.
   Same middle 3 are used for sampling.
 
-  So no much difference. Double mode doubles theoretical max speed,
-  and halves minimum possible speed. Less time granularity, so
-  theoretically better for matching announced speed. Theoretically
-  worse sampling quality, so more reading errors possible.
+  So no much difference. Double mode doubles theoretical max speed, and
+  halves minimum possible speed. Less time granularity, so better for
+  matching announced speed. Theoretically worse sampling quality, so
+  more reading errors possible.
 
-  No much difference. I'll stick to "normal" mode for now.
+  Selling point of "double speed" is 2 Mbps for 16 MHz.
+
+  You have only 80 instructions time before next byte will arrive,
+  so not quite practical for some applications. But man, 2 Mbps is cool.
+
+  And 1 Mbps is cool too when you coming from 57600.
 )
