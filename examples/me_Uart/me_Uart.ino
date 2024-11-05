@@ -5,6 +5,17 @@
   Last mod.: 2024-10-30
 */
 
+/*
+  For ATmega328/P at 16 MHz
+
+    * This transceiver works up to 1 Mbps (10^6 bits per second)
+
+    * It works on up to 2 Mbps for transmission.
+      (2 Mbps is maximum possible speed for 16 MHz.)
+
+  But in real code limiting factor is your stream processing time.
+*/
+
 #include <me_Uart.h>
 
 #include <me_BaseTypes.h>
@@ -24,7 +35,7 @@ void loop()
 
 void RunTest()
 {
-  TUint_4 Speed_Bps = me_UartSpeeds::Bps_115k;
+  TUint_4 Speed_Bps = me_UartSpeeds::Bps_1M;
 
   me_Uart::Init(Speed_Bps);
 
@@ -62,14 +73,11 @@ void RunTest()
 
   Console.Print("Echo until '~' character..");
 
-  // Lol. But without interrupts it works on 1 Mbit
-  // cli();
-
-  TUint_1 Byte = 0;
+  TUint_1 Byte;
   do
   {
-    if (me_Uart::ReceiveByte(&Byte))
-      me_Uart::SendByte(Byte);
+    me_Uart::AwaitByte(&Byte);
+    me_Uart::SendByte(Byte);
   } while (Byte != '~');
 
   Console.Print("[me_Uart] Done.");
