@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-01
+  Last mod.: 2024-11-05
 */
 
 /*
@@ -82,8 +82,8 @@ namespace me_Uart
   // Receive byte
   TBool ReceiveByte(TUint_1 * Value);
 
-  // Await byte for given time
-  TBool AwaitByte(TUint_1 * Value, TUint_2 MaxWaitTime_ms);
+  // Await byte
+  void AwaitByte(TUint_1 * Value);
 
   namespace Freetown
   {

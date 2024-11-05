@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-29
+  Last mod.: 2024-11-05
 */
 
 /*
@@ -14,7 +14,6 @@
 #include "me_Uart.h"
 
 #include <me_BaseTypes.h>
-#include <Arduino.h> // millis() for AwaitByte()
 
 using namespace me_Uart;
 
@@ -47,8 +46,7 @@ void me_Uart::SendByte(
 )
 {
   // This "while" shouldn't take long
-  while (!Freetown::ReadyToTransmit())
-    ;
+  while (!Freetown::ReadyToTransmit());
 
   Freetown::Buffer_PutByte(Value);
 }
@@ -75,27 +73,17 @@ TBool me_Uart::ReceiveByte(
   return true;
 }
 
-// Await byte for given time
-TBool me_Uart::AwaitByte(
-  TUint_1 * Value,
-  TUint_2 MaxWaitTime_ms
+// Await byte. Maybe forever
+void me_Uart::AwaitByte(
+  TUint_1 * Value
 )
 {
-  TUint_4 WaitStartTime = millis();
-  TUint_4 WaitStopTime = WaitStartTime + MaxWaitTime_ms;
-
-  while (true)
-  {
-    if (ReceiveByte(Value))
-      return true;
-
-    if (millis() >= WaitStopTime)
-      return false;
-  }
+  while (!ReceiveByte(Value));
 }
 
 /*
   2024-10-25
   2024-10-26
   2024-10-27
+  2024-11-05
 */
