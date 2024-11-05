@@ -2,7 +2,7 @@
 
 (2024-10)
 
-UART transceiver. Arduino library.
+UART transceiver. Arduino library. 1 Mbps.
 
 Another dive to low-level programming.
 
@@ -24,12 +24,13 @@ Goodbye [HardwareSerial][HardwareSerial]!
 
 ## Example interaction
 
+Demo on 1 Mbps.
+
 Some `for()` to verify output speed. Then echo everything until
 `~` character.
 
 ```
-[me_Uart] Start.
-Speed is 0000250000 baud.
+Speed is 0001000000 baud.
 
 We'll print a lot of lines to measure transfer time.
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
@@ -48,10 +49,12 @@ We'll print a lot of lines to measure transfer time.
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-Transferred 01024 bytes in 0000000042 ms.
+Transferred 01024 bytes in 0000000010 ms.
 Echo until '~' character..
-kfjdshfdsjkfdshjklgjklsdfhgfdskljghdflkjgdfhlkjghskljhjkfdkjdhsajklfhdsakjlfhjkaljkfdslkhafhkjlsaklhj~
-kfjdshfdsjkfdshjklgjklsdfhgfdskljghdflkjgdfhlkjghskljhjkfdkjdhsajklfhdsakjlfhjkaljkfdslkhafhkjlsaklhj~[me_Uart] Done.
+ fd as fd saf;dlk;af;kldas;'f;sklfa;l'
+ fd as fd saf;dlk;af;kldas;'f;sklfa;l'
+~
+~[me_Uart] Done.
 ```
 
 ## Requirements
