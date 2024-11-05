@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-01
+  Last mod.: 2024-11-05
 */
 
 /*
@@ -38,8 +38,8 @@ TUint_1 * UartStatusReg_3 = (TUint_1 *) 194;
 
 TUint_1 * UartBuffer = (TUint_1 *) 198;
 
-TUint_1 * Counter_Limit_Low = (TUint_1 *) 196;
-TUint_1 * Counter_Limit_High = (TUint_1 *) 197;
+TUint_1 * DurationCounterLimit_Byte_0 = (TUint_1 *) 196;
+TUint_1 * DurationCounterLimit_Byte_1 = (TUint_1 *) 197;
 
 // Set bit duration. Custom unit. Not all durations can be set
 TBool Freetown::SetBitDuration_ut(
@@ -69,8 +69,8 @@ TBool Freetown::SetBitDuration_ut(
     Hardware magic occurs at writing low byte of counter.
     So we're writing high byte first.
   */
-  *Counter_Limit_High = (Limit >> 8) & 0xFF;
-  *Counter_Limit_Low = Limit & 0xFF;
+  *DurationCounterLimit_Byte_1 = (Limit >> 8) & 0xFF;
+  *DurationCounterLimit_Byte_0 = Limit & 0xFF;
 
   return true;
 }
