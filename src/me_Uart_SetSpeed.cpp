@@ -2,11 +2,11 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-29
+  Last mod.: 2024-11-06
 */
 
 /*
-  Savant and ambassador
+  Ambassadort, savant and servant
 
   SetSpeed(Baud)
 
@@ -15,6 +15,10 @@
   CalculateBitDuration_ut()
 
     Savant. Does math and returns result in hardware units.
+
+  SetBitDuration_ut()
+
+    Servant. Writes value at specific memory location.
 */
 
 #include "me_Uart.h"
@@ -90,7 +94,55 @@ TUint_4 Freetown::CalculateBitDuration_ut(
     ((F_CPU / (TicksInCycle / 2)) / Speed_Bps + 1) / 2;
 }
 
+// Set bit duration. Custom unit. Not all durations can be set
+TBool Freetown::SetBitDuration_ut(
+  TUint_2 BitDuration_ut
+)
+{
+  union TCounterLimit
+  {
+    TUint_2 Value : 12;
+    struct
+    {
+      TUint_1 Value_LowByte : 8;
+      TUint_1 Value_HighByte : 4;
+    };
+  };
+
+  TCounterLimit * CounterLimit = (TCounterLimit *) 196;
+
+  // Memory value is 12-bit word
+
+  /*
+    We're setting limit value for (0, N) "for" loop.
+
+    It will always run at least once.
+  */
+
+  if (BitDuration_ut == 0)
+    return false;
+
+  TUint_2 Limit = BitDuration_ut - 1;
+
+  // Max value we can store
+  TUint_2 MaxLimit = (1 << 12) - 1;
+
+  if (Limit > MaxLimit)
+    return false;
+
+  /*
+    Hardware magic occurs at writing low byte of counter.
+    So we're writing high byte first.
+  */
+
+  CounterLimit->Value_HighByte = (Limit >> 8) & 0xFF;
+  CounterLimit->Value_LowByte = Limit & 0xFF;
+
+  return true;
+}
+
 /*
   2024-10-28
   2024-10-29
+  2024-11-06 Moved here SetBitDuration_ut() too
 */

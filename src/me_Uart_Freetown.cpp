@@ -38,43 +38,6 @@ TUint_1 * UartStatusReg_3 = (TUint_1 *) 194;
 
 TUint_1 * UartBuffer = (TUint_1 *) 198;
 
-TUint_1 * DurationCounterLimit_Byte_0 = (TUint_1 *) 196;
-TUint_1 * DurationCounterLimit_Byte_1 = (TUint_1 *) 197;
-
-// Set bit duration. Custom unit. Not all durations can be set
-TBool Freetown::SetBitDuration_ut(
-  TUint_2 BitDuration_ut
-)
-{
-  // Memory value is 12-bit word
-
-  /*
-    We're setting limit value for (0, N) "for" loop.
-
-    It will always run at least once.
-  */
-
-  if (BitDuration_ut == 0)
-    return false;
-
-  TUint_2 Limit = BitDuration_ut - 1;
-
-  // Max value we can store
-  TUint_2 MaxLimit = (1 << 12) - 1;
-
-  if (Limit > MaxLimit)
-    return false;
-
-  /*
-    Hardware magic occurs at writing low byte of counter.
-    So we're writing high byte first.
-  */
-  *DurationCounterLimit_Byte_1 = (Limit >> 8) & 0xFF;
-  *DurationCounterLimit_Byte_0 = Limit & 0xFF;
-
-  return true;
-}
-
 // Use normal transceiver speed
 void Freetown::SetNormalSpeed()
 {

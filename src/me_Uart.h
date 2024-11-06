@@ -87,7 +87,7 @@ namespace me_Uart
 
   namespace Freetown
   {
-    // ( SetSpeed() and servant
+    // ( "SetSpeed" module
 
     // Set transceiver speed
     TBool SetSpeed(TUint_4 Speed_Bps);
@@ -95,10 +95,10 @@ namespace me_Uart
     // Calculate bit duration in hardware time units
     TUint_4 CalculateBitDuration_ut(TUint_4 Speed_Bps, TBool UseDoubleSpeed);
 
-    // )
-
     // Set bit duration. Not all durations can be set
     TBool SetBitDuration_ut(TUint_2 BitDuration_ut);
+
+    // )
 
     // Use normal transceiver speed
     void SetNormalSpeed();
