@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-05
+  Last mod.: 2024-11-06
 */
 
 /*
@@ -46,7 +46,7 @@ TBool Freetown::SetBitDuration_ut(
   TUint_2 BitDuration_ut
 )
 {
-  // Memory value is 14-bit word
+  // Memory value is 12-bit word
 
   /*
     We're setting limit value for (0, N) "for" loop.
@@ -60,7 +60,7 @@ TBool Freetown::SetBitDuration_ut(
   TUint_2 Limit = BitDuration_ut - 1;
 
   // Max value we can store
-  TUint_2 MaxLimit = (1 << 14) - 1;
+  TUint_2 MaxLimit = (1 << 12) - 1;
 
   if (Limit > MaxLimit)
     return false;
