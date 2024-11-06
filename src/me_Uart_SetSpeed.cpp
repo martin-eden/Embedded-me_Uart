@@ -6,7 +6,7 @@
 */
 
 /*
-  Ambassadort, savant and servant
+  Ambassador, savant and servant
 
   SetSpeed(Baud)
 
@@ -21,11 +21,37 @@
     Servant. Writes value at specific memory location.
 */
 
+/*
+                           Speed setter
+
+     |
+     | *
+     |
+  1M |  *                                                [ ]
+     |                                                    |  Speed x 2
+     |   *                                               [x]
+     |
+     |
+     |      *
+     |
+     |          *
+     |              *
+     |                    *
+     |                             *
+     |                                           *
+     ---|-----^----------------------------------|----
+        0     |                                4095
+           Duration
+*/
+
 #include "me_Uart.h"
 
 #include <me_BaseTypes.h>
+#include <me_Bits.h>
 
 using namespace me_Uart;
+
+TUint_1 * UartStatusReg_A = (TUint_1 *) 192;
 
 // Set transceiver speed
 TBool Freetown::SetSpeed(
@@ -86,9 +112,7 @@ TUint_4 Freetown::CalculateBitDuration_ut(
   else
     TicksInCycle = 16;
 
-  /*
-    Those "/ 2" and " + 1" are needed for rounding.
-  */
+  // Those "/ 2" and " + 1" are needed for rounding.
 
   return
     ((F_CPU / (TicksInCycle / 2)) / Speed_Bps + 1) / 2;
@@ -110,8 +134,7 @@ TBool Freetown::SetBitDuration_ut(
   };
 
   TCounterLimit * CounterLimit = (TCounterLimit *) 196;
-
-  // Memory value is 12-bit word
+  TCounterLimit CounterLimit_FromArg;
 
   /*
     We're setting limit value for (0, N) "for" loop.
@@ -125,20 +148,42 @@ TBool Freetown::SetBitDuration_ut(
   TUint_2 Limit = BitDuration_ut - 1;
 
   // Max value we can store
-  TUint_2 MaxLimit = (1 << 12) - 1;
+  const TUint_2 MaxLimit = (1 << 12) - 1;
 
   if (Limit > MaxLimit)
     return false;
+
+  CounterLimit_FromArg.Value = Limit;
 
   /*
     Hardware magic occurs at writing low byte of counter.
     So we're writing high byte first.
   */
 
-  CounterLimit->Value_HighByte = (Limit >> 8) & 0xFF;
-  CounterLimit->Value_LowByte = Limit & 0xFF;
+  CounterLimit->Value_HighByte = CounterLimit_FromArg.Value_HighByte;
+  CounterLimit->Value_LowByte = CounterLimit_FromArg.Value_LowByte;
 
   return true;
+}
+
+// Use normal transceiver speed
+void Freetown::SetNormalSpeed()
+{
+  // Value 0. Register 1, offset 1
+
+  const TUint_1 BitOffs = 1;
+
+  me_Bits::SetBit(UartStatusReg_A, BitOffs, false);
+}
+
+// Use double transceiver speed
+void Freetown::SetDoubleSpeed()
+{
+  // Value 1. Register 1, offset 1
+
+  const TUint_1 BitOffs = 1;
+
+  me_Bits::SetBit(UartStatusReg_A, BitOffs, true);
 }
 
 /*

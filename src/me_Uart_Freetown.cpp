@@ -38,26 +38,6 @@ TUint_1 * UartStatusReg_3 = (TUint_1 *) 194;
 
 TUint_1 * UartBuffer = (TUint_1 *) 198;
 
-// Use normal transceiver speed
-void Freetown::SetNormalSpeed()
-{
-  // Value 0. Register 1, offset 1
-
-  const TUint_1 BitOffs = 1;
-
-  SetBit(UartStatusReg_1, BitOffs, false);
-}
-
-// Use double transceiver speed
-void Freetown::SetDoubleSpeed()
-{
-  // Value 1. Register 1, offset 1
-
-  const TUint_1 BitOffs = 1;
-
-  SetBit(UartStatusReg_1, BitOffs, true);
-}
-
 // Set asynchronous UART mode
 void Freetown::SetAsyncMode()
 {
