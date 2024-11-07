@@ -77,13 +77,13 @@ namespace me_Uart
     // Set bit duration. Not all durations can be set
     TBool SetBitDuration_ut(TUint_2 BitDuration_ut);
 
-    // )
-
     // Use normal transceiver speed
     void SetNormalSpeed();
 
     // Use double transceiver speed
     void SetDoubleSpeed();
+
+    // )
 
     // Set asynchronous UART mode
     void SetAsyncMode();
