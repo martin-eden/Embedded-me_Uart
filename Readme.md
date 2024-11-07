@@ -2,7 +2,7 @@
 
 (2024-10/2024-11)
 
-UART transceiver. Arduino library. 1 Mbps.
+UART transceiver. Arduino library. 2 Mbps.
 
 Another dive to low-level programming.
 
