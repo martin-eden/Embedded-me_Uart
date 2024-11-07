@@ -1,6 +1,6 @@
 # What
 
-(2024-10)
+(2024-10/2024-11)
 
 UART transceiver. Arduino library. 1 Mbps.
 
@@ -24,13 +24,17 @@ Goodbye [HardwareSerial][HardwareSerial]!
 
 ## Example interaction
 
-Demo on 1 Mbps.
+Demo on 2 Mbps.
 
 Some `for()` to verify output speed. Then echo everything until
 `~` character.
 
 ```
-Speed is 0001000000 baud.
+[me_Uart] Start.
+Speed is 0002000000 baud.
+
+We'll print a lot of[me_Uart] Start.
+Speed is 0002000000 baud.
 
 We'll print a lot of lines to measure transfer time.
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
@@ -49,10 +53,10 @@ We'll print a lot of lines to measure transfer time.
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-Transferred 01024 bytes in 0000000010 ms.
+Transferred 01024 bytes in 0000000005 ms.
 Echo until '~' character..
- fd as fd saf;dlk;af;kldas;'f;sklfa;l'
- fd as fd saf;dlk;af;kldas;'f;sklfa;l'
+kjfkjfdgkjlfd lkfdkjsljkgfshdfskjfdshjklkljfdshgkldjfshdsfkljhdflkjghdfslkjkdflsjhghgjklsd
+kjfkjfdgkjlfd lkfdkjsljkgfshdfskjfdshjklkljfdshgkldjfshdsfkljhdflkjghdfslkjkdflsjhghgjklsd
 ~
 ~[me_Uart] Done.
 ```
