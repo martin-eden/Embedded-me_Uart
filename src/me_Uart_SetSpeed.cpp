@@ -21,29 +21,6 @@
     Servant. Writes value at specific memory location.
 */
 
-/*
-                           Speed setter
-
-     |
-     | *
-     |
-  1M |  *                                                [ ]
-     |                                                    |  Speed x 2
-     |   *                                               [x]
-     |
-     |
-     |      *
-     |
-     |          *
-     |              *
-     |                    *
-     |                             *
-     |                                           *
-     ---|-----^----------------------------------|----
-        0     |                                4095
-           Duration
-*/
-
 #include "me_Uart.h"
 
 #include <me_BaseTypes.h>

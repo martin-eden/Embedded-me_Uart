@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-06
+  Last mod.: 2024-11-07
 */
 
 /*
@@ -12,7 +12,7 @@
 */
 
 /*
-  ASCII-art documentation for kids and adults
+  Functional diagram for kids and adults
 
                          Transmitter
   -----------------------------------------------------------
@@ -44,6 +44,27 @@
     | ^ | | |     |  -[x]-  |   [x]      |    -[x]-
       |           |    |    |            |      |
   --------------  | -------------------- |-------------
+
+                           Speed setter
+
+     |
+     | *
+     |
+  1M |  *                                                [ ]
+     |                                                    |  Speed x 2
+     |   *                                               [x]
+     |
+     |
+     |      *
+     |
+     |          *
+     |              *
+     |                    *
+     |                             *
+     |                                           *
+     ---|-----^----------------------------------|----
+        0     |                                4095
+           Duration
 */
 
 #pragma once
