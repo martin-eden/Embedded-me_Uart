@@ -33,9 +33,6 @@ Some `for()` to verify output speed. Then echo everything until
 [me_Uart] Start.
 Speed is 0002000000 baud.
 
-We'll print a lot of[me_Uart] Start.
-Speed is 0002000000 baud.
-
 We'll print a lot of lines to measure transfer time.
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
