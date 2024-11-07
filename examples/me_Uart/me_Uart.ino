@@ -35,7 +35,7 @@ void loop()
 
 void RunTest()
 {
-  TUint_4 Speed_Bps = me_UartSpeeds::Bps_1M;
+  TUint_4 Speed_Bps = me_UartSpeeds::Bps_2M;
 
   me_Uart::Init(Speed_Bps);
 

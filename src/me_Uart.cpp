@@ -61,12 +61,12 @@ TBool me_Uart::ReceiveByte(
     Reading or writing it updates flags. So flags must be read first.
   */
 
+  if (!Freetown::ReceivedByte())
+    return false;
+
   // Received with errors. Will read but discard
   while (Freetown::FrameHasErrors())
     Freetown::Buffer_ExtractByte(Value);
-
-  if (!Freetown::ReceivedByte())
-    return false;
 
   Freetown::Buffer_ExtractByte(Value);
 

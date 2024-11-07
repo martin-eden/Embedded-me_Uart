@@ -22,19 +22,36 @@
 
 #include <me_BaseTypes.h>
 
-#include <me_Bits.h>
-
 using namespace me_Uart;
-
-using
-  me_Bits::GetBit,
-  me_Bits::SetBit;
 
 // ( Freetown
 
-TUint_1 * UartStatusReg_1 = (TUint_1 *) 192;
-TUint_1 * UartStatusReg_2 = (TUint_1 *) 193;
-TUint_1 * UartStatusReg_3 = (TUint_1 *) 194;
+struct TRegisters
+{
+  TBool Unused_1_1 : 1;
+  TBool Unused_1_2 : 1;
+  TUint_1 FrameHasErrors : 3;
+  TBool ReadyToTransmit : 1;
+  TBool Unused_1_7 : 1;
+  TBool ReceivedByte : 1;
+
+  TBool Unused_2_1 : 1;
+  TBool Unused_2_2 : 1;
+  TUint_1 FrameSize_3 : 1;
+  TBool EnableTransmitter : 1;
+  TBool EnableReceiver : 1;
+  TBool EnableOnEmptyBufferInterrupt : 1;
+  TBool EnableOnTransmitCompleteInterrupt : 1;
+  TBool EnableOnReceiveCompleteInterrupt : 1;
+
+  TUint_1 Polarity : 1;
+  TUint_1 FrameSize_12 : 2;
+  TUint_1 StopBits : 1;
+  TUint_1 Parity : 2;
+  TUint_1 TransceiverMode : 2;
+};
+
+volatile TRegisters * Registers = (TRegisters * ) 192;
 
 TUint_1 * UartBuffer = (TUint_1 *) 198;
 
@@ -43,10 +60,7 @@ void Freetown::SetAsyncMode()
 {
   // Value 00. Register 3, offset 6
 
-  const TUint_1 BitfieldOffs = 6;
-
-  *UartStatusReg_3 =
-    *UartStatusReg_3 & ~(0x03 << BitfieldOffs);
+  Registers->TransceiverMode = 0;
 
   ClearPolarityBit();
 }
@@ -62,9 +76,7 @@ void Freetown::ClearPolarityBit()
 {
   // Value 0. Register 3, offset 0
 
-  const TUint_1 BitOffs = 0;
-
-  SetBit(UartStatusReg_3, BitOffs, false);
+  Registers->Polarity = 0;
 }
 
 // Set one stop bit in a frame
@@ -72,9 +84,7 @@ void Freetown::SetOneStopBit()
 {
   // Value 0. Register 3, offset 3
 
-  const TUint_1 BitOffs = 3;
-
-  SetBit(UartStatusReg_3, BitOffs, false);
+  Registers->StopBits = 0;
 }
 
 // Set no parity
@@ -82,10 +92,7 @@ void Freetown::SetNoParity()
 {
   // Value 00. Register 3, offset 4
 
-  const TUint_1 BitfieldOffs = 4;
-
-  *UartStatusReg_3 =
-    *UartStatusReg_3 & ~(0x03 << BitfieldOffs);
+  Registers->Parity = 0;
 }
 
 // Set frame size to 8 bits
@@ -97,13 +104,9 @@ void Freetown::Set8BitsFrame()
     Highest bit lives in register 2, offset 2.
     Other two are in register 3 offset 1.
   */
-  const TUint_1 Bit3_BitOffs = 2;
-  const TUint_1 BitfieldOffs = 1;
 
-  SetBit(UartStatusReg_2, Bit3_BitOffs, false);
-
-  *UartStatusReg_3 =
-    *UartStatusReg_3 | (0x03 << BitfieldOffs);
+  Registers->FrameSize_12 = 3;
+  Registers->FrameSize_3 = 0;
 }
 
 // Disable interrupt when data frame received
@@ -111,9 +114,7 @@ void Freetown::DisableOnReceiveCompleteInterrupt()
 {
   // Value 0. Register 2, offset 7
 
-  const TUint_1 BitOffs = 7;
-
-  SetBit(UartStatusReg_2, BitOffs, false);
+  Registers->EnableOnReceiveCompleteInterrupt = false;
 }
 
 // Disable interrupt when data frame sent
@@ -121,9 +122,7 @@ void Freetown::DisableOnTransmitCompleteInterrupt()
 {
   // Value 0. Register 2, offset 6
 
-  const TUint_1 BitOffs = 6;
-
-  SetBit(UartStatusReg_2, BitOffs, false);
+  Registers->EnableOnTransmitCompleteInterrupt = false;
 }
 
 // Disable interrupt when no data
@@ -131,9 +130,7 @@ void Freetown::DisableOnEmptyBufferInterrupt()
 {
   // Value 0. Register 2, offset 5
 
-  const TUint_1 BitOffs = 5;
-
-  SetBit(UartStatusReg_2, BitOffs, false);
+  Registers->EnableOnEmptyBufferInterrupt = false;
 }
 
 // Disable receiver
@@ -141,9 +138,7 @@ void Freetown::DisableReceiver()
 {
   // Value 0. Register 2, offset 4
 
-  const TUint_1 BitOffs = 4;
-
-  SetBit(UartStatusReg_2, BitOffs, false);
+  Registers->EnableReceiver = false;
 }
 
 // Enable receiver
@@ -151,9 +146,7 @@ void Freetown::EnableReceiver()
 {
   // Value 1. Register 2, offset 4
 
-  const TUint_1 BitOffs = 4;
-
-  SetBit(UartStatusReg_2, BitOffs, true);
+  Registers->EnableReceiver = true;
 }
 
 // Disable transmitter
@@ -161,9 +154,7 @@ void Freetown::DisableTransmitter()
 {
   // Value 0. Register 2, offset 3
 
-  const TUint_1 BitOffs = 3;
-
-  SetBit(UartStatusReg_2, BitOffs, false);
+  Registers->EnableTransmitter = false;
 }
 
 // Enable transmitter
@@ -171,9 +162,31 @@ void Freetown::EnableTransmitter()
 {
   // Value 1. Register 2, offset 3
 
-  const TUint_1 BitOffs = 3;
+  Registers->EnableTransmitter = true;
+}
 
-  SetBit(UartStatusReg_2, BitOffs, true);
+// Return true when transmitter is idle
+TBool Freetown::ReadyToTransmit()
+{
+  // Register 1, offset 5. Read-only
+
+  return Registers->ReadyToTransmit;
+}
+
+// Return true when there is data in receive buffer
+TBool Freetown::ReceivedByte()
+{
+  // Register 1, offset 7. Read-only
+
+  return Registers->ReceivedByte;
+}
+
+// Return true if frame is received with errors
+TBool Freetown::FrameHasErrors()
+{
+  // Value should be not 000. Register 1, offset 2
+
+  return (Registers->FrameHasErrors != 0);
 }
 
 // Put byte to transceiver buffer
@@ -202,48 +215,6 @@ void Freetown::Buffer_ExtractByte(
   *Data = *UartBuffer;
 }
 
-// Return true when transmitter is idle
-TBool Freetown::ReadyToTransmit()
-{
-  // Register 1, offset 5. Read-only
-
-  const TUint_1 BitOffs = 5;
-
-  return GetBit(*UartStatusReg_1, BitOffs);
-}
-
-// Return true when there is data in receive buffer
-TBool Freetown::ReceivedByte()
-{
-  // Register 1, offset 7. Read-only
-
-  const TUint_1 BitOffs = 7;
-
-  return GetBit(*UartStatusReg_1, BitOffs);
-}
-
-// Return true if frame is received with errors
-TBool Freetown::FrameHasErrors()
-{
-  // Value should be 000. Register 1, offset 2
-
-  /*
-    There are three error flags: bad parity, wrong length and
-    buffer overflow. Originally there was getter for each flag.
-    But at 250K making three calls taking too long. So this
-    union function.
-
-    Over 250K speed blocker is timer interrupt. Without interrupts
-    transmitter works at 1M.
-  */
-
-  const TUint_1 BitfieldOffs = 2;
-
-  const TUint_1 Mask = (0x7 << BitfieldOffs);
-
-  return (*UartStatusReg_1 & Mask) != 0;
-}
-
 // ) Freetown
 
 /*
@@ -252,4 +223,5 @@ TBool Freetown::FrameHasErrors()
   2024-10-27
   2024-10-29
   2024-11-01
+  2024-11-07
 */

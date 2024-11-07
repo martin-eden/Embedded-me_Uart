@@ -122,7 +122,7 @@ namespace me_Uart
     void EnableTransmitter();
 
     // Return true when transmitter is idle
-    TBool ReadyToTransmit() __attribute__((optimize("O0")));
+    TBool ReadyToTransmit();
 
     // Put byte to transceiver buffer
     void Buffer_PutByte(TUint_1 Data);
@@ -131,10 +131,10 @@ namespace me_Uart
     void Buffer_ExtractByte(TUint_1 * Data);
 
     // Return true when there is data in receive buffer
-    TBool ReceivedByte() __attribute__((optimize("O1")));
+    TBool ReceivedByte();
 
     // Return true if frame is received with errors
-    TBool FrameHasErrors() __attribute__((optimize("O1")));
+    TBool FrameHasErrors();
   }
 }
 
