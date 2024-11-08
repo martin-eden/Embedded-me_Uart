@@ -18,49 +18,72 @@
   Comments are just poor man's names.
 */
 
-#include "me_Uart.h"
+#include <me_Uart_Freetown.h>
 
 #include <me_BaseTypes.h>
 
-using namespace me_Uart;
+using namespace me_Uart::Freetown;
+
+TRegister * Register = (TRegister *) 192;
+TCounterLimit * CounterLimit = (TCounterLimit *) 196;
+TUint_1 * UartBuffer = (TUint_1 *) 198;
 
 // ( Freetown
 
-struct TRegisters
+/*
+  Set bit duration
+
+  Custom time unit. Not all durations can be set.
+
+  We're setting limit value for (0, N) "for" loop.
+  So it will always run at least once.
+*/
+TBool me_Uart::Freetown::SetBitDuration_ut(
+  TUint_2 BitDuration_ut
+)
 {
-  TBool Unused_1_1 : 1;
-  TBool Unused_1_2 : 1;
-  TUint_1 FrameHasErrors : 3;
-  TBool ReadyToTransmit : 1;
-  TBool Unused_1_7 : 1;
-  TBool ReceivedByte : 1;
+  const TUint_2 MaxLimit = (1 << 12) - 1;
 
-  TBool Unused_2_1 : 1;
-  TBool Unused_2_2 : 1;
-  TUint_1 FrameSize_3 : 1;
-  TBool EnableTransmitter : 1;
-  TBool EnableReceiver : 1;
-  TBool EnableOnEmptyBufferInterrupt : 1;
-  TBool EnableOnTransmitCompleteInterrupt : 1;
-  TBool EnableOnReceiveCompleteInterrupt : 1;
+  if (BitDuration_ut == 0)
+    return false;
 
-  TUint_1 Polarity : 1;
-  TUint_1 FrameSize_12 : 2;
-  TUint_1 StopBits : 1;
-  TUint_1 Parity : 2;
-  TUint_1 TransceiverMode : 2;
-};
+  TUint_2 Limit = BitDuration_ut - 1;
 
-volatile TRegisters * Registers = (TRegisters * ) 192;
+  if (Limit > MaxLimit)
+    return false;
 
-TUint_1 * UartBuffer = (TUint_1 *) 198;
+  TCounterLimit CounterLimit_FromArg;
+  CounterLimit_FromArg.Value = Limit;
+
+  // Hardware magic occurs at writing low byte of counter.
+  CounterLimit->Value_HighByte = CounterLimit_FromArg.Value_HighByte;
+  CounterLimit->Value_LowByte = CounterLimit_FromArg.Value_LowByte;
+
+  return true;
+}
+
+// Use normal transceiver speed
+void me_Uart::Freetown::SetNormalSpeed()
+{
+  // Value 0. Register 1, offset 1
+
+  Register->UseDoubleSpeed = false;
+}
+
+// Use double transceiver speed
+void me_Uart::Freetown::SetDoubleSpeed()
+{
+  // Value 1. Register 1, offset 1
+
+  Register->UseDoubleSpeed = true;
+}
 
 // Set asynchronous UART mode
-void Freetown::SetAsyncMode()
+void me_Uart::Freetown::SetAsyncMode()
 {
   // Value 00. Register 3, offset 6
 
-  Registers->TransceiverMode = 0;
+  Register->TransceiverMode = 0;
 
   ClearPolarityBit();
 }
@@ -72,31 +95,31 @@ void Freetown::SetAsyncMode()
 
   For async mode this bit should be set to zero.
 */
-void Freetown::ClearPolarityBit()
+void me_Uart::Freetown::ClearPolarityBit()
 {
   // Value 0. Register 3, offset 0
 
-  Registers->Polarity = 0;
+  Register->Polarity = 0;
 }
 
 // Set one stop bit in a frame
-void Freetown::SetOneStopBit()
+void me_Uart::Freetown::SetOneStopBit()
 {
   // Value 0. Register 3, offset 3
 
-  Registers->StopBits = 0;
+  Register->StopBits = 0;
 }
 
 // Set no parity
-void Freetown::SetNoParity()
+void me_Uart::Freetown::SetNoParity()
 {
   // Value 00. Register 3, offset 4
 
-  Registers->Parity = 0;
+  Register->Parity = 0;
 }
 
 // Set frame size to 8 bits
-void Freetown::Set8BitsFrame()
+void me_Uart::Freetown::Set8BitsFrame()
 {
   /*
     Value 011
@@ -105,92 +128,92 @@ void Freetown::Set8BitsFrame()
     Other two are in register 3 offset 1.
   */
 
-  Registers->FrameSize_12 = 3;
-  Registers->FrameSize_3 = 0;
+  Register->FrameSize_12 = 3;
+  Register->FrameSize_3 = 0;
 }
 
 // Disable interrupt when data frame received
-void Freetown::DisableOnReceiveCompleteInterrupt()
+void me_Uart::Freetown::DisableOnReceiveCompleteInterrupt()
 {
   // Value 0. Register 2, offset 7
 
-  Registers->EnableOnReceiveCompleteInterrupt = false;
+  Register->EnableOnReceiveCompleteInterrupt = false;
 }
 
 // Disable interrupt when data frame sent
-void Freetown::DisableOnTransmitCompleteInterrupt()
+void me_Uart::Freetown::DisableOnTransmitCompleteInterrupt()
 {
   // Value 0. Register 2, offset 6
 
-  Registers->EnableOnTransmitCompleteInterrupt = false;
+  Register->EnableOnTransmitCompleteInterrupt = false;
 }
 
 // Disable interrupt when no data
-void Freetown::DisableOnEmptyBufferInterrupt()
+void me_Uart::Freetown::DisableOnEmptyBufferInterrupt()
 {
   // Value 0. Register 2, offset 5
 
-  Registers->EnableOnEmptyBufferInterrupt = false;
+  Register->EnableOnEmptyBufferInterrupt = false;
 }
 
 // Disable receiver
-void Freetown::DisableReceiver()
+void me_Uart::Freetown::DisableReceiver()
 {
   // Value 0. Register 2, offset 4
 
-  Registers->EnableReceiver = false;
+  Register->EnableReceiver = false;
 }
 
 // Enable receiver
-void Freetown::EnableReceiver()
+void me_Uart::Freetown::EnableReceiver()
 {
   // Value 1. Register 2, offset 4
 
-  Registers->EnableReceiver = true;
+  Register->EnableReceiver = true;
 }
 
 // Disable transmitter
-void Freetown::DisableTransmitter()
+void me_Uart::Freetown::DisableTransmitter()
 {
   // Value 0. Register 2, offset 3
 
-  Registers->EnableTransmitter = false;
+  Register->EnableTransmitter = false;
 }
 
 // Enable transmitter
-void Freetown::EnableTransmitter()
+void me_Uart::Freetown::EnableTransmitter()
 {
   // Value 1. Register 2, offset 3
 
-  Registers->EnableTransmitter = true;
+  Register->EnableTransmitter = true;
 }
 
 // Return true when transmitter is idle
-TBool Freetown::ReadyToTransmit()
+TBool me_Uart::Freetown::ReadyToTransmit()
 {
   // Register 1, offset 5. Read-only
 
-  return Registers->ReadyToTransmit;
+  return Register->ReadyToTransmit;
 }
 
 // Return true when there is data in receive buffer
-TBool Freetown::ReceivedByte()
+TBool me_Uart::Freetown::ReceivedByte()
 {
   // Register 1, offset 7. Read-only
 
-  return Registers->ReceivedByte;
+  return Register->ReceivedByte;
 }
 
 // Return true if frame is received with errors
-TBool Freetown::FrameHasErrors()
+TBool me_Uart::Freetown::FrameHasErrors()
 {
   // Value should be not 000. Register 1, offset 2
 
-  return (Registers->FrameHasErrors != 0);
+  return (Register->FrameHasErrors != 0);
 }
 
 // Put byte to transceiver buffer
-void Freetown::Buffer_PutByte(
+void me_Uart::Freetown::Buffer_PutByte(
   TUint_1 Data
 )
 {
@@ -203,7 +226,7 @@ void Freetown::Buffer_PutByte(
 }
 
 // Extract byte from transceiver buffer
-void Freetown::Buffer_ExtractByte(
+void me_Uart::Freetown::Buffer_ExtractByte(
   TUint_1 * Data
 )
 {

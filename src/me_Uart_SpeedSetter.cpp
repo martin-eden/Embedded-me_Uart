@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-07
+  Last mod.: 2024-11-08
 */
 
 /*
@@ -21,30 +21,10 @@
     Servant. Writes value at specific memory location.
 */
 
-#include "me_Uart.h"
+#include <me_Uart.h>
 
 #include <me_BaseTypes.h>
-
-union TCounterLimit
-{
-  TUint_2 Value : 12;
-  struct
-  {
-    TUint_1 Value_LowByte : 8;
-    TUint_1 Value_HighByte : 4;
-  };
-};
-
-TCounterLimit * CounterLimit = (TCounterLimit *) 196;
-
-struct TDoubleSpeedSwitch
-{
-  TUint_1 Unused_1 : 1;
-  TBool UseDoubleSpeed : 1;
-  TUint_1 Unused_2 : 6;
-};
-
-TDoubleSpeedSwitch * DoubleSpeedSwitch = (TDoubleSpeedSwitch *) 192;
+#include <me_Uart_Freetown.h>
 
 using namespace me_Uart;
 
@@ -114,56 +94,9 @@ TUint_4 Freetown::CalculateBitDuration_ut(
 }
 
 /*
-  Set bit duration
-
-  Custom time unit. Not all durations can be set.
-
-  We're setting limit value for (0, N) "for" loop.
-  So it will always run at least once.
-*/
-TBool Freetown::SetBitDuration_ut(
-  TUint_2 BitDuration_ut
-)
-{
-  const TUint_2 MaxLimit = (1 << 12) - 1;
-
-  if (BitDuration_ut == 0)
-    return false;
-
-  TUint_2 Limit = BitDuration_ut - 1;
-
-  if (Limit > MaxLimit)
-    return false;
-
-  TCounterLimit CounterLimit_FromArg;
-  CounterLimit_FromArg.Value = Limit;
-
-  // Hardware magic occurs at writing low byte of counter.
-  CounterLimit->Value_HighByte = CounterLimit_FromArg.Value_HighByte;
-  CounterLimit->Value_LowByte = CounterLimit_FromArg.Value_LowByte;
-
-  return true;
-}
-
-// Use normal transceiver speed
-void Freetown::SetNormalSpeed()
-{
-  // Value 0. Register 1, offset 1
-
-  DoubleSpeedSwitch->UseDoubleSpeed = false;
-}
-
-// Use double transceiver speed
-void Freetown::SetDoubleSpeed()
-{
-  // Value 1. Register 1, offset 1
-
-  DoubleSpeedSwitch->UseDoubleSpeed = true;
-}
-
-/*
   2024-10-28
   2024-10-29
-  2024-11-06 Moved here SetBitDuration_ut() too
-  2024-11-07 and SetNormalSpeed(), SetDoubleSpeed() too
+  2024-11-06
+  2024-11-07
+  2024-11-08
 */

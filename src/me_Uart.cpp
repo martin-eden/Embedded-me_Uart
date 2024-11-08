@@ -14,6 +14,7 @@
 #include "me_Uart.h"
 
 #include <me_BaseTypes.h>
+#include <me_Uart_Freetown.h>
 
 using namespace me_Uart;
 
