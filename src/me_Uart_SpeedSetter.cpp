@@ -6,6 +6,29 @@
 */
 
 /*
+                           Speed setter
+
+     |
+     | *
+     |
+  1M |  *                                                [ ]
+     |                                                    |  Speed x 2
+     |   *                                               [x]
+     |
+     |
+     |      *
+     |
+     |          *
+     |              *
+     |                    *
+     |                             *
+     |                                           *
+     ---|-----^----------------------------------|----
+        0     |                                4095
+           Duration
+*/
+
+/*
   Ambassador, savant and servant
 
   SetSpeed(Baud)
@@ -26,10 +49,10 @@
 #include <me_BaseTypes.h>
 #include <me_Uart_Freetown.h>
 
-using namespace me_Uart;
+using namespace me_Uart::Freetown;
 
 // Set transceiver speed
-TBool Freetown::SetSpeed(
+TBool TSpeedSetter::SetSpeed(
   TUint_4 Speed_Bps
 )
 {
@@ -50,9 +73,9 @@ TBool Freetown::SetSpeed(
     BitDuration_ut =
       CalculateBitDuration_ut(Speed_Bps, UseSmallUnits);
 
-    if (Freetown::SetBitDuration_ut(BitDuration_ut))
+    if (SetBitDuration_ut(BitDuration_ut))
     {
-      Freetown::SetDoubleSpeed();
+      SetDoubleSpeed();
       return true;
     }
   }
@@ -63,9 +86,9 @@ TBool Freetown::SetSpeed(
     BitDuration_ut =
       CalculateBitDuration_ut(Speed_Bps, UseSmallUnits);
 
-    if (Freetown::SetBitDuration_ut(BitDuration_ut))
+    if (SetBitDuration_ut(BitDuration_ut))
     {
-      Freetown::SetNormalSpeed();
+      SetNormalSpeed();
       return true;
     }
   }
@@ -75,7 +98,7 @@ TBool Freetown::SetSpeed(
 }
 
 // Calculate bit duration in hardware time units
-TUint_4 Freetown::CalculateBitDuration_ut(
+TUint_4 TSpeedSetter::CalculateBitDuration_ut(
   TUint_4 Speed_Bps,
   TBool UseDoubleSpeed
 )
@@ -91,6 +114,50 @@ TUint_4 Freetown::CalculateBitDuration_ut(
 
   return
     ((F_CPU / (TicksPerCycle / 2)) / Speed_Bps + 1) / 2;
+}
+
+/*
+  Set bit duration
+
+  Custom time unit. Not all durations can be set.
+
+  We're setting limit value for (0, N) "for" loop.
+  So it will always run at least once.
+*/
+TBool TSpeedSetter::SetBitDuration_ut(
+  TUint_2 BitDuration_ut
+)
+{
+  const TUint_2 MaxLimit = (1 << 12) - 1;
+
+  if (BitDuration_ut == 0)
+    return false;
+
+  TUint_2 Limit = BitDuration_ut - 1;
+
+  if (Limit > MaxLimit)
+    return false;
+
+  TCounterLimit CounterLimit_FromArg;
+  CounterLimit_FromArg.Value = Limit;
+
+  // Hardware magic occurs at writing low byte of counter.
+  CounterLimit->Value_HighByte = CounterLimit_FromArg.Value_HighByte;
+  CounterLimit->Value_LowByte = CounterLimit_FromArg.Value_LowByte;
+
+  return true;
+}
+
+// Use normal transceiver speed
+void TSpeedSetter::SetNormalSpeed()
+{
+  Register->UseDoubleSpeed = false;
+}
+
+// Use double transceiver speed
+void TSpeedSetter::SetDoubleSpeed()
+{
+  Register->UseDoubleSpeed = true;
 }
 
 /*

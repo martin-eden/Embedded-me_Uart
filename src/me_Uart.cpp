@@ -23,20 +23,44 @@ TBool me_Uart::Init(
   TUint_4 Speed_Bps
 )
 {
-  if (!Freetown::SetSpeed(Speed_Bps))
+  Freetown::TFrameSetter FrameSetter;
+  Freetown::TSpeedSetter SpeedSetter;
+  Freetown::TTransmitter Transmitter;
+  Freetown::TReceiver Receiver;
+
+  FrameSetter.SetOneStopBit();
+  FrameSetter.SetNoParity();
+  FrameSetter.Set8BitsFrame();
+
+  if (!SpeedSetter.SetSpeed(Speed_Bps))
     return false;
 
+
+/*
+
+   | Async |
+   |   |   |
+   | -[x]- |
+   |   |   |
+   |  [ ]  |
+   |       |
+
+
+   Receiver
+   (*) Ready  --- [ ] ---
+
+   Transmitter
+   (*) Ready  --- [ ] ---
+*/
+
   Freetown::SetAsyncMode();
-  Freetown::SetOneStopBit();
-  Freetown::SetNoParity();
-  Freetown::Set8BitsFrame();
 
   Freetown::DisableOnReceiveCompleteInterrupt();
   Freetown::DisableOnTransmitCompleteInterrupt();
   Freetown::DisableOnEmptyBufferInterrupt();
 
-  Freetown::EnableReceiver();
-  Freetown::EnableTransmitter();
+  Receiver.On();
+  Transmitter.On();
 
   return true;
 }
@@ -46,10 +70,12 @@ void me_Uart::SendByte(
   TUint_1 Value
 )
 {
-  // This "while" shouldn't take long
-  while (!Freetown::ReadyToTransmit());
+  Freetown::TTransmitter Transmitter;
 
-  Freetown::Buffer_PutByte(Value);
+  // This "while" shouldn't take long
+  while (!Transmitter.IsReady());
+
+  Transmitter.Put(Value);
 }
 
 // Receive byte
@@ -57,19 +83,21 @@ TBool me_Uart::ReceiveByte(
   TUint_1 * Value
 )
 {
+  Freetown::TReceiver Receiver;
+
   /*
     There is hardware magic at accessing transceiver buffer.
     Reading or writing it updates flags. So flags must be read first.
   */
 
-  if (!Freetown::ReceivedByte())
+  if (!Receiver.IsReady())
     return false;
 
   // Received with errors. Will read but discard
-  while (Freetown::FrameHasErrors())
-    Freetown::Buffer_ExtractByte(Value);
+  while (Receiver.AreErrors())
+    Receiver.Get();
 
-  Freetown::Buffer_ExtractByte(Value);
+  *Value = Receiver.Get();
 
   return true;
 }
