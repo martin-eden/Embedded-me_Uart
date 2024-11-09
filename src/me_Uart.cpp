@@ -2,13 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-05
-*/
-
-/*
-  No Freetown punks here!
-
-  Here are only white-collar functions with situation awareness.
+  Last mod.: 2024-11-09
 */
 
 #include "me_Uart.h"
@@ -41,9 +35,10 @@ TBool me_Uart::Init(
   if (!SpeedSetter.SetSpeed(Speed_Bps))
     return false;
 
-  Freetown::DisableOnReceiveCompleteInterrupt();
-  Freetown::DisableOnTransmitCompleteInterrupt();
-  Freetown::DisableOnEmptyBufferInterrupt();
+  Receiver.HasDataInterrupt.Off();
+
+  Transmitter.IsReadyInterrupt.Off();
+  Transmitter.FrameSentInterrupt.Off();
 
   Receiver.On();
   Transmitter.On();
@@ -90,7 +85,7 @@ TBool me_Uart::GetByte(
 }
 
 // Await byte. Maybe forever
-void me_Uart::AwaitByte(
+void me_Uart::WaitByte(
   TUint_1 * Value
 )
 {

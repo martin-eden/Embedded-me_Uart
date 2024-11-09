@@ -7,17 +7,17 @@
 
 /*
            Mode setter
-   --------------------------
-   |  Async  |              |
-   |    |    |              |
-   |  -[x]-  |              |
-   |    |    |-- Polarity --|
-   |   [ ]   |              |
-   |         |     [ ]      |
-   |       --|      |       |
-   |         |    -[x]-     |
-   |         |      |       |
-   --------------------------
+   ------------------------
+   |  Async  |            |
+   |    |    |            |
+   |  -[x]-  |            |
+   |    |    |------------|
+   |   [ ]   |  Polarity  |
+   |         |    [ ]     |
+   |       --|     |      |
+   |         |   -[x]-    |
+   |         |     |      |
+   ------------------------
 */
 
 #include <me_Uart.h>
@@ -43,7 +43,7 @@ void TModeSetter::SetAsyncMode()
 */
 void TModeSetter::ClearPolarityBit()
 {
-  Register->Polarity = 0;
+  Register->Sync_Polarity = 0;
 }
 
 /*

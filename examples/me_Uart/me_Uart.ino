@@ -18,7 +18,7 @@
   Footprint
 
     Memory   Size     Date
-      9       552  2024-11-08
+      9       542  2024-11-09
 */
 
 #include <me_Uart.h>
@@ -39,14 +39,14 @@ void loop()
 
 void RunTest()
 {
-  me_Uart::Init(me_UartSpeeds::Bps_57k);
+  me_Uart::Init(me_UartSpeeds::Bps_2M);
 
   me_Uart::SendByte('>');
 
   TUint_1 Byte;
   while (true)
   {
-    me_Uart::AwaitByte(&Byte);
+    me_Uart::WaitByte(&Byte);
     if (Byte == '^')
       break;
     me_Uart::SendByte(Byte);

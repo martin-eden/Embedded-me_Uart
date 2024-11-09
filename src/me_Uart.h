@@ -7,8 +7,6 @@
 
 /*
   Here is unsophisticated design. Three core functions.
-
-  We are not using external buffers for transmission and receiving.
 */
 
 #pragma once
@@ -27,7 +25,7 @@ namespace me_Uart
   TBool GetByte(TUint_1 * Value);
 
   // Await byte. Maybe forever
-  void AwaitByte(TUint_1 * Value);
+  void WaitByte(TUint_1 * Value);
 }
 
 /*

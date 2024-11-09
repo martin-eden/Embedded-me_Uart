@@ -13,13 +13,14 @@ namespace me_Uart
 {
   namespace Freetown
   {
+    // Memory map of USART registers
     struct TRegister
     {
       TBool Unused_1_1 : 1;
       TBool UseDoubleSpeed : 1;
       volatile TUint_1 FrameHasErrors : 3;
-      volatile TBool ReadyToTransmit : 1;
-      volatile TBool Transmitted : 1;
+      volatile TBool ReadyToSend : 1;
+      volatile TBool Sent : 1;
       volatile TBool Received : 1;
 
       TBool Unused_2_1 : 1;
@@ -27,17 +28,18 @@ namespace me_Uart
       TUint_1 FrameSize_3 : 1;
       TBool EnableTransmitter : 1;
       TBool EnableReceiver : 1;
-      TBool EnableOnEmptyBufferInterrupt : 1;
-      TBool EnableOnTransmitCompleteInterrupt : 1;
-      TBool EnableOnReceiveCompleteInterrupt : 1;
+      TBool EnableOnReadyToSendInterrupt : 1;
+      TBool EnableOnSentInterrupt : 1;
+      TBool EnableOnReceivedInterrupt : 1;
 
-      TUint_1 Polarity : 1;
+      TUint_1 Sync_Polarity : 1;
       TUint_1 FrameSize_12 : 2;
       TUint_1 StopBits : 1;
       TUint_1 Parity : 2;
       TUint_1 TransceiverMode : 2;
     };
 
+    // Bit duration counter
     union TCounterLimit
     {
       TUint_2 Value : 12;
@@ -57,6 +59,7 @@ namespace me_Uart
         TUint_1 * Buffer = (TUint_1 *) 198;
     };
 
+    // Mode setter
     class TModeSetter : protected TBareUart
     {
       public:
@@ -93,14 +96,28 @@ namespace me_Uart
         TBool SetBitDuration_ut(TUint_2 BitDuration_ut);
     };
 
-    // Transmitter
-    class TTransmitter : protected TBareUart
+    // Interrupt when data frame received
+    class TReceivedDataInterrupt : protected TBareUart
     {
       public:
         void On();
         void Off();
-        TBool IsReady();
-        void Put(TUint_1 Data);
+    };
+
+    // Interrupt when data frame sent
+    class TSentDataInterrupt : protected TBareUart
+    {
+      public:
+        void On();
+        void Off();
+    };
+
+    // Interrupt when transmitter is ready for new data
+    class TReadyToSendInterrupt : protected TBareUart
+    {
+      public:
+        void On();
+        void Off();
     };
 
     // Receiver
@@ -112,16 +129,20 @@ namespace me_Uart
         TBool HasData();
         TBool AreErrors();
         TUint_1 Get();
+        TReceivedDataInterrupt HasDataInterrupt;
     };
 
-    // Disable interrupt when data frame received
-    void DisableOnReceiveCompleteInterrupt();
-
-    // Disable interrupt when data frame sent
-    void DisableOnTransmitCompleteInterrupt();
-
-    // Disable interrupt when no data
-    void DisableOnEmptyBufferInterrupt();
+    // Transmitter
+    class TTransmitter : protected TBareUart
+    {
+      public:
+        void On();
+        void Off();
+        TBool IsReady();
+        void Put(TUint_1 Data);
+        TReadyToSendInterrupt IsReadyInterrupt;
+        TSentDataInterrupt FrameSentInterrupt;
+    };
   }
 }
 
@@ -132,4 +153,5 @@ namespace me_Uart
   2024-10-29
   2024-11-01
   2024-11-08
+  2024-11-09
 */

@@ -36,7 +36,7 @@ void TTransmitter::Off()
 
 TBool TTransmitter::IsReady()
 {
-  return Register->ReadyToTransmit;
+  return Register->ReadyToSend;
 }
 
 void TTransmitter::Put(TUint_1 Data)
