@@ -6,6 +6,24 @@ UART transceiver. Arduino library. 2 Mbps.
 
 Another dive to low-level programming.
 
+## Example interaction
+
+Demo on 2 Mbps.
+
+That's a bare-bones [example][Example] to test memory footprint and
+code size. (For 2024-11-09 required memory is `9` bytes and
+code size is `542` bytes.)
+
+Sketch outputs `>` and start and then echoes everything except `^`.
+On `^` it exits and outputs `<`.
+
+```
+>>kjfdkjlfdghfkhjlsdhdfskljhsldkjkjldfsjhkdsfkjlghdfslkhdflku34hi534293487r
+kjfdkjlfdghfkhjlsdhdfskljhsldkjkjldfsjhkdsfkjlghdfslkhdflku34hi534293487r
+^
+<
+```
+
 ## Details
 
 System output. Skillcheck. One of the things every hacker should write
@@ -21,42 +39,6 @@ No need for them in my projects (yet?).
 I've switched [me_Console][me_Console] and
 [me_InstallStandardStreams][me_InstallStandardStreams] to this.
 Goodbye [HardwareSerial][HardwareSerial]!
-
-## Example interaction
-
-Demo on 2 Mbps.
-
-Some `for()` to verify output speed. Then echo everything until
-`~` character.
-
-```
-[me_Uart] Start.
-Speed is 0002000000 baud.
-
-We'll print a lot of lines to measure transfer time.
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-Transferred 01024 bytes in 0000000005 ms.
-Echo until '~' character..
-kjfkjfdgkjlfd lkfdkjsljkgfshdfskjfdshjklkljfdshgkldjfshdsfkljhdflkjghdfslkjkdflsjhghgjklsd
-kjfkjfdgkjlfd lkfdkjsljkgfshdfskjfdshjklkljfdshgkldjfshdsfkljhdflkjghdfslkjkdflsjhghgjklsd
-~
-~[me_Uart] Done.
-```
 
 ## Requirements
 
@@ -85,10 +67,12 @@ arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-prop
 ## Code
 
 * [Example][Example]
-* [Interface][Interface]
+* Interface
+  * [Frontend][Interface_front]
+  * [Backend][Interface_back]
 * Implementation
   * [Frontend][Implementation_front]
-  * [Backend][Implementation_back]
+  * [Backend][Implementation_back] (implementation is separated by modules)
 
 ## See also
 
@@ -96,9 +80,10 @@ arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-prop
 * [My other repositories][Repos]
 
 [Example]: examples/me_Uart/me_Uart.ino
-[Interface]: src/me_Uart.h
+[Interface_front]: src/me_Uart.h
+[Interface_back]: src/me_Uart_Freetown.h
 [Implementation_front]: src/me_Uart.cpp
-[Implementation_back]: src/me_Uart_Freetown.cpp
+[Implementation_back]: src/
 
 [me_Console]: https://github.com/martin-eden/Embedded-me_Console
 [me_InstallStandardStreams]: https://github.com/martin-eden/Embedded-me_InstallStandardStreams
