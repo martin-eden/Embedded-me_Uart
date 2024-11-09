@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-08
+  Last mod.: 2024-11-09
 */
 
 /*
@@ -23,10 +23,10 @@ namespace me_Uart
   // Send byte
   void SendByte(TUint_1 Value);
 
-  // Receive byte
-  TBool ReceiveByte(TUint_1 * Value);
+  // Get byte (if we has one)
+  TBool GetByte(TUint_1 * Value);
 
-  // Await byte
+  // Await byte. Maybe forever
   void AwaitByte(TUint_1 * Value);
 }
 

@@ -57,6 +57,16 @@ namespace me_Uart
         TUint_1 * Buffer = (TUint_1 *) 198;
     };
 
+    class TModeSetter : protected TBareUart
+    {
+      public:
+        // Set asynchronous mode
+        void SetAsyncMode();
+
+      protected:
+        void ClearPolarityBit();
+    };
+
     // Frame setter
     class TFrameSetter : protected TBareUart
     {
@@ -99,16 +109,10 @@ namespace me_Uart
       public:
         void On();
         void Off();
-        TBool IsReady();
+        TBool HasData();
         TBool AreErrors();
         TUint_1 Get();
     };
-
-    // Set asynchronous UART mode
-    void SetAsyncMode();
-
-    // Clear polarity bit. Polarity is synchronous mode stuff
-    void ClearPolarityBit();
 
     // Disable interrupt when data frame received
     void DisableOnReceiveCompleteInterrupt();

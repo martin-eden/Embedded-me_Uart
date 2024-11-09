@@ -30,30 +30,6 @@ TUint_1 * UartBuffer = (TUint_1 *) 198;
 
 // ( Freetown
 
-// Set asynchronous UART mode
-void me_Uart::Freetown::SetAsyncMode()
-{
-  // Value 00. Register 3, offset 6
-
-  Register->TransceiverMode = 0;
-
-  ClearPolarityBit();
-}
-
-/*
-  Clear polarity bit
-
-  Polarity is synchronous mode stuff.
-
-  For async mode this bit should be set to zero.
-*/
-void me_Uart::Freetown::ClearPolarityBit()
-{
-  // Value 0. Register 3, offset 0
-
-  Register->Polarity = 0;
-}
-
 // Disable interrupt when data frame received
 void me_Uart::Freetown::DisableOnReceiveCompleteInterrupt()
 {

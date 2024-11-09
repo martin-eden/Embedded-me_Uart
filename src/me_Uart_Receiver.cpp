@@ -8,13 +8,18 @@
 /*
                          Receiver
   -----------------------------------------------------------
-       |                 Data                   |
-   On  |                                        | (*) Ready
-   [x] |     7   6   5   4   3   2   1   0      | (o) Errors
-    |  |    (o) (o) (o) (o) (o) (o) (o) (o)     |  ______
-   [ ] |                                        | | Next |
-       |                                        | `~~~~~~'
+       |               Data                |
+   On  |                                   | (*) Has data
+   [x] |   7   6   5   4   3   2   1   0   | (o) With errors
+    |  |  (o) (o) (o) (o) (o) (o) (o) (o)  |    __________
+   [ ] |                                   |   | Get next |
+       |                                   |   `~~~~~~~~~~'
   -----------------------------------------------------------
+
+   Receiver                   Interrupts
+  -------------     |     ------------------
+  (*) Has data  ---[ ]---
+  -------------     |     ------------------
 */
 
 #include <me_Uart.h>
@@ -34,7 +39,7 @@ void TReceiver::Off()
   Register->EnableReceiver = false;
 }
 
-TBool TReceiver::IsReady()
+TBool TReceiver::HasData()
 {
   return Register->Received;
 }
