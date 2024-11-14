@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-08
+  Last mod.: 2024-11-14
 */
 
 #pragma once
@@ -13,9 +13,27 @@ namespace me_Uart
 {
   namespace Freetown
   {
-    // Memory map of USART registers
-    struct TRegister
+    // Baudrate divisor (or bit loop counter limit)
+    union TBaudrateDivisor
     {
+      TUint_2 Value : 12;
+      struct
+      {
+        TUint_1 Value_LowByte : 8;
+        TUint_1 Value_HighByte : 4;
+      };
+      TUint_1 Unused : 4;
+    };
+
+    /*
+      Memory map of USART registers
+
+      For ATmega328/P USART state occupies memory from 0xC0 to 0xC6.
+      Seven bytes.
+    */
+    struct TUartState
+    {
+      // Byte 1 (UCSR0A)
       TBool Unused_1_1 : 1;
       TBool UseDoubleSpeed : 1;
       volatile TUint_1 FrameHasErrors : 3;
@@ -23,6 +41,7 @@ namespace me_Uart
       volatile TBool Sent : 1;
       volatile TBool Received : 1;
 
+      // Byte 2 (USCR0B)
       TBool Unused_2_1 : 1;
       TBool Unused_2_2 : 1;
       TUint_1 FrameSize_3 : 1;
@@ -32,31 +51,28 @@ namespace me_Uart
       TBool EnableOnSentInterrupt : 1;
       TBool EnableOnReceivedInterrupt : 1;
 
+      // Byte 3 (UCSR0C)
       TUint_1 Sync_Polarity : 1;
       TUint_1 FrameSize_12 : 2;
       TUint_1 StopBits : 1;
       TUint_1 Parity : 2;
       TUint_1 TransceiverMode : 2;
+
+      // Byte 4 (Reserved)
+      TUint_1 Unused_4;
+
+      // Bytes 5 and 6 (UBRR0L and URR0H)
+      TBaudrateDivisor BaudrateDivisor;
+
+      // Byte 7 (UDR0)
+      TUint_1 Buffer;
     };
 
-    // Bit duration counter
-    union TCounterLimit
-    {
-      TUint_2 Value : 12;
-      struct
-      {
-        TUint_1 Value_LowByte : 8;
-        TUint_1 Value_HighByte : 4;
-      };
-    };
-
-    // Mapped device memory
+    // Mapped state
     class TBareUart
     {
       protected:
-        TRegister * Register = (TRegister *) 192;
-        TCounterLimit * CounterLimit = (TCounterLimit *) 196;
-        TUint_1 * Buffer = (TUint_1 *) 198;
+        TUartState * UartState = (TUartState *) 0xC0;
     };
 
     // Mode setter
@@ -154,4 +170,5 @@ namespace me_Uart
   2024-11-01
   2024-11-08
   2024-11-09
+  2024-11-14 Changes after external code review
 */

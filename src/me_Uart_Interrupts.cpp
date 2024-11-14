@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-09
+  Last mod.: 2024-11-14
 */
 
 /*
@@ -28,37 +28,37 @@ using namespace me_Uart::Freetown;
 // Enable interrupt when data frame received
 void TReceivedDataInterrupt::On()
 {
-  Register->EnableOnReceivedInterrupt = true;
+  UartState->EnableOnReceivedInterrupt = true;
 }
 
 // Disable interrupt when data frame received
 void TReceivedDataInterrupt::Off()
 {
-  Register->EnableOnReceivedInterrupt = false;
+  UartState->EnableOnReceivedInterrupt = false;
 }
 
 // Enable interrupt when no data to send
 void TReadyToSendInterrupt::On()
 {
-  Register->EnableOnReadyToSendInterrupt = true;
+  UartState->EnableOnReadyToSendInterrupt = true;
 }
 
 // Disable interrupt when no data to send
 void TReadyToSendInterrupt::Off()
 {
-  Register->EnableOnReadyToSendInterrupt = false;
+  UartState->EnableOnReadyToSendInterrupt = false;
 }
 
 // Enable interrupt when data frame sent
 void TSentDataInterrupt::On()
 {
-  Register->EnableOnSentInterrupt = true;
+  UartState->EnableOnSentInterrupt = true;
 }
 
 // Disable interrupt when data frame sent
 void TSentDataInterrupt::Off()
 {
-  Register->EnableOnSentInterrupt = false;
+  UartState->EnableOnSentInterrupt = false;
 }
 
 /*

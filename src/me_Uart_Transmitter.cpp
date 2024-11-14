@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-08
+  Last mod.: 2024-11-14
 */
 
 /*
@@ -26,22 +26,22 @@ using namespace me_Uart::Freetown;
 
 void TTransmitter::On()
 {
-  Register->EnableTransmitter = true;
+  UartState->EnableTransmitter = true;
 }
 
 void TTransmitter::Off()
 {
-  Register->EnableTransmitter = false;
+  UartState->EnableTransmitter = false;
 }
 
 TBool TTransmitter::IsReady()
 {
-  return Register->ReadyToSend;
+  return UartState->ReadyToSend;
 }
 
 void TTransmitter::Put(TUint_1 Data)
 {
-  *Buffer = Data;
+  UartState->Buffer = Data;
 }
 
 /*
