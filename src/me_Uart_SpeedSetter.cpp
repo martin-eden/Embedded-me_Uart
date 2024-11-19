@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-14
+  Last mod.: 2024-11-19
 */
 
 /*
@@ -138,14 +138,12 @@ TBool TSpeedSetter::SetBitDuration_ut(
   if (Limit > MaxLimit)
     return false;
 
-  TBaudrateDivisor BaudrateDivisor_FromArg;
-  BaudrateDivisor_FromArg.Value = Limit;
+  TBaudrateDivisor Arg;
+  Arg.Value = Limit;
 
   // Hardware magic occurs at writing low byte of counter.
-  UartState->BaudrateDivisor.Value_HighByte =
-    BaudrateDivisor_FromArg.Value_HighByte;
-  UartState->BaudrateDivisor.Value_LowByte =
-    BaudrateDivisor_FromArg.Value_LowByte;
+  Uart->BaudrateDivisor.Value_HighByte = Arg.Value_HighByte;
+  Uart->BaudrateDivisor.Value_LowByte = Arg.Value_LowByte;
 
   return true;
 }
@@ -153,13 +151,13 @@ TBool TSpeedSetter::SetBitDuration_ut(
 // Use normal transceiver speed
 void TSpeedSetter::SetNormalSpeed()
 {
-  UartState->UseDoubleSpeed = false;
+  Uart->UseDoubleSpeed = false;
 }
 
 // Use double transceiver speed
 void TSpeedSetter::SetDoubleSpeed()
 {
-  UartState->UseDoubleSpeed = true;
+  Uart->UseDoubleSpeed = true;
 }
 
 /*

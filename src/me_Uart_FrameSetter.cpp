@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-14
+  Last mod.: 2024-11-19
 */
 
 /*
@@ -30,20 +30,20 @@ using namespace me_Uart::Freetown;
 void TFrameSetter::Set8BitsFrame()
 {
   // Value 011
-  UartState->FrameSize_3 = 0;
-  UartState->FrameSize_12 = 3;
+  Uart->FrameSize_3 = 0;
+  Uart->FrameSize_12 = 3;
 }
 
 // Set no parity
 void TFrameSetter::SetNoParity()
 {
-  UartState->Parity = 0;
+  Uart->Parity = 0;
 }
 
 // Set one stop bit in a frame
 void TFrameSetter::SetOneStopBit()
 {
-  UartState->StopBits = 0;
+  Uart->StopBits = 0;
 }
 
 /*

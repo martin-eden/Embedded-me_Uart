@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-14
+  Last mod.: 2024-11-19
 */
 
 /*
@@ -26,27 +26,27 @@ using namespace me_Uart::Freetown;
 
 void TReceiver::On()
 {
-  UartState->EnableReceiver = true;
+  Uart->EnableReceiver = true;
 }
 
 void TReceiver::Off()
 {
-  UartState->EnableReceiver = false;
+  Uart->EnableReceiver = false;
 }
 
 TBool TReceiver::HasData()
 {
-  return UartState->Received;
+  return Uart->Received;
 }
 
 TBool TReceiver::AreErrors()
 {
-  return (UartState->FrameHasErrors != 0);
+  return (Uart->FrameHasErrors != 0);
 }
 
 TUint_1 TReceiver::Get()
 {
-  return UartState->Buffer;
+  return Uart->Buffer;
 }
 
 /*

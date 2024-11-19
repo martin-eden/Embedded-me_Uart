@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-14
+  Last mod.: 2024-11-19
 */
 
 /*
@@ -30,7 +30,7 @@ using namespace me_Uart::Freetown;
 // Set asynchronous UART mode
 void TModeSetter::SetAsyncMode()
 {
-  UartState->TransceiverMode = 0;
+  Uart->TransceiverMode = 0;
   ClearPolarityBit();
 }
 
@@ -43,7 +43,7 @@ void TModeSetter::SetAsyncMode()
 */
 void TModeSetter::ClearPolarityBit()
 {
-  UartState->Sync_Polarity = 0;
+  Uart->Sync_Polarity = 0;
 }
 
 /*

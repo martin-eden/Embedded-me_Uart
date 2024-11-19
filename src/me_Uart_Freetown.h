@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-14
+  Last mod.: 2024-11-19
 */
 
 #pragma once
@@ -72,7 +72,7 @@ namespace me_Uart
     class TBareUart
     {
       protected:
-        TUartState * UartState = (TUartState *) 0xC0;
+        TUartState * Uart = (TUartState *) 0xC0;
     };
 
     // Mode setter
