@@ -104,6 +104,8 @@ namespace me_Uart
       public:
         // Set speed in baud
         TBool SetSpeed(TUint_4 Speed_Bps);
+        // Estimate real speed
+        TUint_4 GetSpeed();
 
       protected:
         TUint_4 CalculateBitDuration_ut(TUint_4 Speed_Bps, TBool UseDoubleSpeed);

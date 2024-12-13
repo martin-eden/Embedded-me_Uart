@@ -97,6 +97,27 @@ TBool TSpeedSetter::SetSpeed(
   return false;
 }
 
+/*
+  Estimate speed using CPU freq and bit duration
+*/
+TUint_4 TSpeedSetter::GetSpeed()
+{
+  TUint_2 BitDuration;
+  TUint_1 TicksPerCycle;
+  TUint_4 Speed_Bps;
+
+  BitDuration = Uart->BitDuration.Value + 1;
+
+  TicksPerCycle = 16;
+
+  if (Uart->UseDoubleSpeed)
+    TicksPerCycle = 8;
+
+  Speed_Bps = F_CPU / (BitDuration * TicksPerCycle);
+
+  return Speed_Bps;
+}
+
 // Calculate bit duration in hardware time units
 TUint_4 TSpeedSetter::CalculateBitDuration_ut(
   TUint_4 Speed_Bps,
@@ -105,10 +126,10 @@ TUint_4 TSpeedSetter::CalculateBitDuration_ut(
 {
   TUint_1 TicksPerCycle;
 
+  TicksPerCycle = 16;
+
   if (UseDoubleSpeed)
     TicksPerCycle = 8;
-  else
-    TicksPerCycle = 16;
 
   // Those "/ 2" and " + 1" are needed for rounding.
 
@@ -141,7 +162,7 @@ TBool TSpeedSetter::SetBitDuration_ut(
   TBitDuration Arg;
   Arg.Value = Limit;
 
-  // Hardware magic occurs at writing low byte of counter.
+  // Hardware magic occurs when writing low byte of counter.
   Uart->BitDuration.Value_HighByte = Arg.Value_HighByte;
   Uart->BitDuration.Value_LowByte = Arg.Value_LowByte;
 
@@ -161,9 +182,7 @@ void TSpeedSetter::SetDoubleSpeed()
 }
 
 /*
-  2024-10-28
-  2024-10-29
-  2024-11-06
-  2024-11-07
-  2024-11-08
+  2024-10 ##
+  2024-11 ###
+  2024-12-13
 */
