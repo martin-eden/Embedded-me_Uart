@@ -22,7 +22,7 @@ namespace me_Uart
         TUint_1 Value_LowByte : 8;
         TUint_1 Value_HighByte : 4;
       };
-      TUint_1 Unused : 4;
+      TUnit : 4;
     };
 
     /*
@@ -34,7 +34,7 @@ namespace me_Uart
     struct TUartState
     {
       // Byte 1 (UCSR0A)
-      TBool Unused_1_1 : 1;
+      TUnit : 1;
       TBool UseDoubleSpeed : 1;
       volatile TUint_1 FrameHasErrors : 3;
       volatile TBool ReadyToSend : 1;
@@ -42,8 +42,8 @@ namespace me_Uart
       volatile TBool Received : 1;
 
       // Byte 2 (USCR0B)
-      TBool Unused_2_1 : 1;
-      TBool Unused_2_2 : 1;
+      TUnit : 1;
+      TUnit : 1;
       TUint_1 FrameSize_3 : 1;
       TBool EnableTransmitter : 1;
       TBool EnableReceiver : 1;
@@ -59,13 +59,13 @@ namespace me_Uart
       TUint_1 TransceiverMode : 2;
 
       // Byte 4 (Reserved)
-      TUint_1 Unused_4;
+      TUnit : 8;
 
       // Bytes 5 and 6 (UBRR0L and URR0H)
       TBitDuration BitDuration;
 
       // Byte 7 (UDR0)
-      TUint_1 Buffer;
+      TUnit Buffer : 8;
     };
 
     // Mapped state
@@ -144,7 +144,7 @@ namespace me_Uart
         void Off();
         TBool HasData();
         TBool AreErrors();
-        TUint_1 Get();
+        TUnit Get();
         TReceivedDataInterrupt HasDataInterrupt;
     };
 
@@ -155,7 +155,7 @@ namespace me_Uart
         void On();
         void Off();
         TBool IsReady();
-        void Put(TUint_1 Data);
+        void Put(TUnit Data);
         TReadyToSendInterrupt IsReadyInterrupt;
         TSentDataInterrupt FrameSentInterrupt;
     };
