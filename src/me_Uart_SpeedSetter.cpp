@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-19
+  Last mod.: 2024-12-13
 */
 
 /*
@@ -138,12 +138,12 @@ TBool TSpeedSetter::SetBitDuration_ut(
   if (Limit > MaxLimit)
     return false;
 
-  TBaudrateDivisor Arg;
+  TBitDuration Arg;
   Arg.Value = Limit;
 
   // Hardware magic occurs at writing low byte of counter.
-  Uart->BaudrateDivisor.Value_HighByte = Arg.Value_HighByte;
-  Uart->BaudrateDivisor.Value_LowByte = Arg.Value_LowByte;
+  Uart->BitDuration.Value_HighByte = Arg.Value_HighByte;
+  Uart->BitDuration.Value_LowByte = Arg.Value_LowByte;
 
   return true;
 }

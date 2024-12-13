@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-19
+  Last mod.: 2024-12-13
 */
 
 #pragma once
@@ -14,7 +14,7 @@ namespace me_Uart
   namespace Freetown
   {
     // Baudrate divisor (or bit loop counter limit)
-    union TBaudrateDivisor
+    union TBitDuration
     {
       TUint_2 Value : 12;
       struct
@@ -62,7 +62,7 @@ namespace me_Uart
       TUint_1 Unused_4;
 
       // Bytes 5 and 6 (UBRR0L and URR0H)
-      TBaudrateDivisor BaudrateDivisor;
+      TBitDuration BitDuration;
 
       // Byte 7 (UDR0)
       TUint_1 Buffer;
@@ -72,7 +72,7 @@ namespace me_Uart
     class TBareUart
     {
       protected:
-        TUartState * Uart = (TUartState *) 0xC0;
+        TUartState * Uart = (TUartState *) 192;
     };
 
     // Mode setter
@@ -163,12 +163,7 @@ namespace me_Uart
 }
 
 /*
-  2024-10-25
-  2024-10-26
-  2024-10-27
-  2024-10-29
-  2024-11-01
-  2024-11-08
-  2024-11-09
-  2024-11-14 Changes after external code review
+  2024-10 ####
+  2024-11 ####
+  2024-12-13
 */
