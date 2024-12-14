@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-13
+  Last mod.: 2024-12-14
 */
 
 /*
@@ -44,7 +44,7 @@ TBool TReceiver::AreErrors()
   return (Uart->FrameHasErrors != 0);
 }
 
-TUnit TReceiver::Get()
+TUint_1 TReceiver::Get()
 {
   return Uart->Buffer;
 }

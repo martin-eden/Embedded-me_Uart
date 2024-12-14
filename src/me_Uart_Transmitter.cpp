@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-13
+  Last mod.: 2024-12-14
 */
 
 /*
@@ -39,7 +39,7 @@ TBool TTransmitter::IsReady()
   return Uart->ReadyToSend;
 }
 
-void TTransmitter::Put(TUnit Data)
+void TTransmitter::Put(TUint_1 Data)
 {
   Uart->Buffer = Data;
 }
