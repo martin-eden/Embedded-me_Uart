@@ -62,6 +62,5 @@ void TSentDataInterrupt::Off()
 }
 
 /*
-  2024-11-08
-  2024-11-09
+  2024-11 ##
 */

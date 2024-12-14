@@ -45,5 +45,5 @@ void TTransmitter::Put(TUint_1 Data)
 }
 
 /*
-  2024-11-08
+  2024-11 #
 */

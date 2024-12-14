@@ -47,5 +47,5 @@ void TFrameSetter::SetOneStopBit()
 }
 
 /*
-  2024-11-08
+  2024-11 #
 */
