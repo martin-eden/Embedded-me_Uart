@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-14
+  Last mod.: 2024-12-15
 */
 
 #pragma once
@@ -105,13 +105,12 @@ namespace me_Uart
         // Set speed in baud
         TBool SetSpeed(TUint_4 Speed_Bps);
         // Estimate real speed
-        TUint_4 GetSpeed();
+        TBool GetSpeed(TUint_4 * Speed_Bps);
 
       protected:
-        TUint_4 CalculateBitDuration_ut(TUint_4 Speed_Bps, TBool UseDoubleSpeed);
+        void SetBitDuration_ut(TBitDuration BitDuration);
         void SetNormalSpeed();
         void SetDoubleSpeed();
-        TBool SetBitDuration_ut(TUint_2 BitDuration_ut);
     };
 
     // Interrupt when data frame received

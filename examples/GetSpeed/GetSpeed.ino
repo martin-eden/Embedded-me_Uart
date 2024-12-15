@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-13
+  Last mod.: 2024-12-15
 */
 
 /*
@@ -20,22 +20,30 @@
 
 #include <me_Uart_Freetown.h> // low-level module with fancy stuff
 
-TUint_4 GetRealSpeed()
+TBool GetRealSpeed(TUint_4 * Speed_Bps)
 {
   using
     me_Uart::Freetown::TSpeedSetter;
 
   TSpeedSetter SpeedSetter;
 
-  return SpeedSetter.GetSpeed();
+  return SpeedSetter.GetSpeed(Speed_Bps);
 }
 
 void setup()
 {
   // Works from 300 to 2000000 speeds. Amazing
-  me_Uart::Init(115200);
+  if (!me_Uart::Init(115200))
+    return;
 
-  TUint_4 RealSpeed = GetRealSpeed();
+  TUint_4 RealSpeed;
+
+  if (!GetRealSpeed(&RealSpeed))
+  {
+    Console.Print("Failed to get real speed.");
+    return;
+  }
+
   Console.Write("Real speed is (bps)");
   Console.Print(RealSpeed);
   Console.EndLine();

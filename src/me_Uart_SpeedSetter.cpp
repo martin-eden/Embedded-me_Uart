@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-13
+  Last mod.: 2024-12-15
 */
 
 /*
@@ -28,22 +28,6 @@
            Duration
 */
 
-/*
-  Ambassador, savant and servant
-
-  SetSpeed(Baud)
-
-    Is ambassador. Makes sure UART is set to given speed.
-
-  CalculateBitDuration_ut()
-
-    Savant. Does math and returns result in hardware units.
-
-  SetBitDuration_ut()
-
-    Servant. Writes value at specific memory location.
-*/
-
 #include <me_Uart.h>
 
 #include <me_BaseTypes.h>
@@ -51,90 +35,136 @@
 
 using namespace me_Uart::Freetown;
 
+// Quite generic function to do core calculation
+TBool EstimateLength(
+  TUint_4 * NumUnits,
+  TUint_4 Length,
+  TUint_4 UnitSize
+)
+{
+  if (UnitSize == 0)
+    return false;
+
+  // Rounding to nearest integer
+  *NumUnits = ((2 * Length / UnitSize) + 1) / 2;
+
+  return true;
+}
+
+/*
+  Speed (bits per second)
+
+  Internal structure.
+
+  Speed as described as number of time units
+  and unit size.
+*/
+struct TSpeedSetting
+{
+  TUint_2 BitDuration_ut;
+  TBool UseNormalSpeed;
+};
+
+/*
+  Calculate bit duration in hardware time units
+
+  We're inverting speed to delays.
+
+  We're willing to use smaller time units for precision.
+
+  If there are too much small time units, we'll use larger ones.
+*/
+TBool CalculateBitDuration_ut(
+  TSpeedSetting * HwSpeed,
+  TUint_4 Speed_Bps
+)
+{
+  // Bit duration we can store is 12-bit value
+  const TUint_4 MaxDuration = (1 << 12);
+
+  TUint_4 CycleDuration;
+  TUint_4 CyclesPerSecond;
+  TBool UsedDoubleUnits;
+
+  // Duration of cycle is 8 ticks
+  CyclesPerSecond = F_CPU / 8;
+  UsedDoubleUnits = false;
+
+  // Calculate duration
+  if (!EstimateLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
+    return false;
+
+  // Speed too slow:
+  if (CycleDuration > MaxDuration)
+  {
+    // Duration of cycle is 16 ticks
+    CyclesPerSecond = F_CPU / 16;
+    UsedDoubleUnits = true;
+
+    // Calculate duration
+    if (!EstimateLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
+      return false;
+
+    // Speed still too slow. Fail
+    if (CycleDuration > MaxDuration)
+      return false;
+  }
+
+  // Speed too high. Fail
+  if (CycleDuration == 0)
+    return false;
+
+  HwSpeed->BitDuration_ut = (TUint_2) CycleDuration;
+  HwSpeed->UseNormalSpeed = UsedDoubleUnits;
+
+  return true;
+}
+
 // Set transceiver speed
 TBool TSpeedSetter::SetSpeed(
   TUint_4 Speed_Bps
 )
 {
-  /*
-    We're inverting speed to delays.
+  TSpeedSetting SpeedSetting;
+  TBool IsOkay;
+  TBitDuration BitDuration;
 
-    We're willing to use smaller time units for precision.
+  IsOkay = CalculateBitDuration_ut(&SpeedSetting, Speed_Bps);
 
-    If there are too much small time units, we'll use larger ones.
-  */
+  if (!IsOkay)
+    return false;
 
-  TBool UseSmallUnits;
-  TUint_2 BitDuration_ut;
+  // assert( 1 <= SpeedSetting.BitDuration_ut <= 4096 )
+  BitDuration.Value = SpeedSetting.BitDuration_ut - 1;
 
-  // Use small time units
-  {
-    UseSmallUnits = true;
-    BitDuration_ut =
-      CalculateBitDuration_ut(Speed_Bps, UseSmallUnits);
+  SetBitDuration_ut(BitDuration);
 
-    if (SetBitDuration_ut(BitDuration_ut))
-    {
-      SetDoubleSpeed();
-      return true;
-    }
-  }
+  if (SpeedSetting.UseNormalSpeed)
+    SetNormalSpeed();
+  else
+    SetDoubleSpeed();
 
-  // Use large time units
-  {
-    UseSmallUnits = false;
-    BitDuration_ut =
-      CalculateBitDuration_ut(Speed_Bps, UseSmallUnits);
-
-    if (SetBitDuration_ut(BitDuration_ut))
-    {
-      SetNormalSpeed();
-      return true;
-    }
-  }
-
-  // Nope. Probably speed is too low to be expressed in our delay units
-  return false;
+  return true;
 }
 
 /*
   Estimate speed using CPU freq and bit duration
 */
-TUint_4 TSpeedSetter::GetSpeed()
+TBool TSpeedSetter::GetSpeed(
+  TUint_4 * Speed_Bps
+)
 {
   TUint_2 BitDuration;
   TUint_1 TicksPerCycle;
-  TUint_4 Speed_Bps;
 
   BitDuration = Uart->BitDuration.Value + 1;
 
-  TicksPerCycle = 16;
-
   if (Uart->UseDoubleSpeed)
     TicksPerCycle = 8;
+  else
+    TicksPerCycle = 16;
 
-  Speed_Bps = F_CPU / (BitDuration * TicksPerCycle);
-
-  return Speed_Bps;
-}
-
-// Calculate bit duration in hardware time units
-TUint_4 TSpeedSetter::CalculateBitDuration_ut(
-  TUint_4 Speed_Bps,
-  TBool UseDoubleSpeed
-)
-{
-  TUint_1 TicksPerCycle;
-
-  TicksPerCycle = 16;
-
-  if (UseDoubleSpeed)
-    TicksPerCycle = 8;
-
-  // Those "/ 2" and " + 1" are needed for rounding.
-
-  return
-    ((F_CPU / (TicksPerCycle / 2)) / Speed_Bps + 1) / 2;
+  return EstimateLength(Speed_Bps, F_CPU / TicksPerCycle, BitDuration);
 }
 
 /*
@@ -145,28 +175,13 @@ TUint_4 TSpeedSetter::CalculateBitDuration_ut(
   We're setting limit value for (0, N) "for" loop.
   So it will always run at least once.
 */
-TBool TSpeedSetter::SetBitDuration_ut(
-  TUint_2 BitDuration_ut
+void TSpeedSetter::SetBitDuration_ut(
+  TBitDuration BitDuration
 )
 {
-  const TUint_2 MaxLimit = (1 << 12) - 1;
-
-  if (BitDuration_ut == 0)
-    return false;
-
-  TUint_2 Limit = BitDuration_ut - 1;
-
-  if (Limit > MaxLimit)
-    return false;
-
-  TBitDuration Arg;
-  Arg.Value = Limit;
-
-  // Hardware magic occurs when writing low byte of counter.
-  Uart->BitDuration.Value_HighByte = Arg.Value_HighByte;
-  Uart->BitDuration.Value_LowByte = Arg.Value_LowByte;
-
-  return true;
+  // Hardware magic occurs when writing low byte
+  Uart->BitDuration.Value_HighByte = BitDuration.Value_HighByte;
+  Uart->BitDuration.Value_LowByte = BitDuration.Value_LowByte;
 }
 
 // Use normal transceiver speed
@@ -185,4 +200,5 @@ void TSpeedSetter::SetDoubleSpeed()
   2024-10 ##
   2024-11 ###
   2024-12-13
+  2024-12-15
 */
