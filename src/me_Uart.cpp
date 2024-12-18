@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-09
+  Last mod.: 2024-12-18
 */
 
 #include "me_Uart.h"
@@ -92,7 +92,29 @@ void me_Uart::WaitByte(
   while (!GetByte(Value));
 }
 
+// ( Wrappers for TOperation
+TBool me_Uart::Op_GetByte(
+  TAddress Data,
+  TAddress Unused [[gnu::unused]]
+)
+{
+  return GetByte((TUint_1 *) Data);
+}
+
+TBool me_Uart::Op_PutByte(
+  TAddress Data,
+  TAddress Unused [[gnu::unused]]
+)
+{
+  SendByte(*(TUint_1 *) Data);
+
+  return true;
+}
+
+// )
+
 /*
   2024-10 ###
   2024-11 #
+  2024-12-18
 */

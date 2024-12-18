@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-09
+  Last mod.: 2024-12-18
 */
 
 /*
@@ -26,9 +26,15 @@ namespace me_Uart
 
   // Await byte. Maybe forever
   void WaitByte(TUint_1 * Value);
+
+  // ( Wrappers as TOperation
+  TBool Op_GetByte(TAddress Data, TAddress Unused);
+  TBool Op_PutByte(TAddress Data, TAddress Unused);
+  // )
 }
 
 /*
   2024-10 ####
   2024-11 ##
+  2024-12-18
 */
