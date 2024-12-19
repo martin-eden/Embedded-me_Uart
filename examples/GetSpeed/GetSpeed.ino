@@ -10,7 +10,8 @@
   Bit duration on microcontroller is calculated using that
   and required speed.
 
-  Here we are calling reverse calculation to get speed.
+  Here we are calling reverse calculation: get speed from
+  knowing bit duration and CPU frequency.
 */
 
 #include <me_BaseTypes.h>

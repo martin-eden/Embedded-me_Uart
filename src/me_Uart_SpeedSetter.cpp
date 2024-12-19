@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-15
+  Last mod.: 2024-12-19
 */
 
 /*
@@ -30,7 +30,6 @@
 
 #include <me_Uart.h>
 
-#include <me_BaseTypes.h>
 #include <me_Uart_Freetown.h>
 
 using namespace me_Uart::Freetown;
