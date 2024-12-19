@@ -2,16 +2,17 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-11-08
+  Last mod.: 2024-12-19
 */
 
 /*
-  For ATmega328/P at 16 MHz
+  Loopback test for ATmega328/P at 16 MHz
 
-    * This transceiver works up to 2 Mbps
-      (2 Mbps is maximum possible speed for 16 MHz.)
+  Echoes everything until it gets "^".
 
-  But in real code limiting factor is your stream processing time.
+  This transceiver works up to 2 Mbps. (2 Mbps is maximum speed
+  for 16 MHz.) But in real code limiting factor is your stream
+  processing time.
 */
 
 /*
@@ -24,7 +25,6 @@
 #include <me_Uart.h>
 
 #include <me_BaseTypes.h>
-#include <me_UartSpeeds.h>
 
 void setup()
 {
@@ -39,25 +39,28 @@ void loop()
 
 void RunTest()
 {
-  me_Uart::Init(me_UartSpeeds::Bps_2M);
-
-  me_Uart::SendByte('>');
+  using namespace me_Uart;
 
   TUint_1 Byte;
+
+  Init(Speed_2M_Bps);
+
+  SendByte('>');
+
   while (true)
   {
-    me_Uart::WaitByte(&Byte);
+    WaitByte(&Byte);
+
     if (Byte == '^')
       break;
-    me_Uart::SendByte(Byte);
+
+    SendByte(Byte);
   }
 
-  me_Uart::SendByte('<');
+  SendByte('<');
 }
 
 /*
-  2024-10-25
-  2024-10-26
-  2024-10-27
-  2024-10-30
+  2024-10 # # # #
+  2024-12-19
 */
