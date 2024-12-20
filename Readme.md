@@ -46,14 +46,9 @@ Goodbye [HardwareSerial][HardwareSerial]!
   * bash
 
 
-## Install
+## Install/remove
 
-Run [Install.sh](Install.sh).
-
-
-## Remove
-
-Run [Remove.sh](Remove.sh).
+Easy way is to clone [GetLibs][GetLibs] repo and run it's code.
 
 
 ## Compile
@@ -88,6 +83,8 @@ arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-prop
 [me_Console]: https://github.com/martin-eden/Embedded-me_Console
 [me_InstallStandardStreams]: https://github.com/martin-eden/Embedded-me_InstallStandardStreams
 [HardwareSerial]: https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/HardwareSerial.cpp
+
+[GetLibs]: https://github.com/martin-eden/Embedded-Framework-GetLibs
 
 [Embedded]: https://github.com/martin-eden/Embedded_Crafts/tree/master/Parts
 [Repos]: https://github.com/martin-eden/contents
