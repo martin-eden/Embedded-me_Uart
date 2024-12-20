@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-19
+  Last mod.: 2024-12-20
 */
 
 #pragma once
@@ -16,13 +16,17 @@ namespace me_Uart
     // Baudrate divisor (or bit loop counter limit)
     union TBitDuration
     {
-      TUint_2 Value : 12;
+      struct
+      {
+        TUint_2 Value : 12;
+        TUint_1 : 4;
+      };
       struct
       {
         TUint_1 Value_LowByte : 8;
         TUint_1 Value_HighByte : 4;
+        TUint_1 : 4;
       };
-      TUint_1 : 4;
     };
 
     /*
