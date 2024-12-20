@@ -61,5 +61,5 @@ void TSentDataInterrupt::Off()
 }
 
 /*
-  2024-11 ##
+  2024-11 # #
 */
