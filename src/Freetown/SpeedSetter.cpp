@@ -28,9 +28,9 @@
            Duration
 */
 
-#include <me_Uart_Freetown.h>
+#include "Freetown/Interface.h"
 
-#include <me_Uart_Bare.h>
+#include "Bare/Interface.h"
 
 using namespace me_Uart_Freetown;
 

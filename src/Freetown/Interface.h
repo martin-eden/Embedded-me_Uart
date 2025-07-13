@@ -9,7 +9,7 @@
 
 #include <me_BaseTypes.h>
 
-#include <me_Uart_Bare.h>
+#include "Bare/Interface.h"
 
 namespace me_Uart_Freetown
 {

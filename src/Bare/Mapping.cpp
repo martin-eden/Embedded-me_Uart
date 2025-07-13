@@ -5,7 +5,7 @@
   Last mod.: 2025-07-13
 */
 
-#include <me_Uart_Bare.h>
+#include "Bare/Interface.h"
 
 /*
   Ancient language C compiles all files in directory.
