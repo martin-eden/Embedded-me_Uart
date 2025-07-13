@@ -11,18 +11,18 @@
 
 namespace me_Uart_Bare
 {
-  // Baudrate divisor (or bit loop counter limit)
+  // Baudrate divisor (or bit loop counter limit or bit duration)
   union TBitDuration
   {
     struct
     {
-      TUint_2 Value : 12;
+      TUint_2 Duration : 12;
       TUint_1 : 4;
     };
     struct
     {
-      TUint_1 Value_LowByte : 8;
-      TUint_1 Value_HighByte : 4;
+      TUint_1 Duration_LowByte : 8;
+      TUint_1 Duration_HighByte : 4;
       TUint_1 : 4;
     };
   };
