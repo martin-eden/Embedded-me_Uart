@@ -18,11 +18,11 @@ TBool me_Uart::Init(
   TUint_4 Speed_Bps
 )
 {
+  me_Uart_Freetown::TReceiver Receiver;
+  me_Uart_Freetown::TTransmitter Transmitter;
   me_Uart_Freetown::TModeSetter ModeSetter;
   me_Uart_Freetown::TFrameSetter FrameSetter;
   me_Uart_Freetown::TSpeedSetter SpeedSetter;
-  me_Uart_Freetown::TTransmitter Transmitter;
-  me_Uart_Freetown::TReceiver Receiver;
 
   Receiver.Off();
   Transmitter.Off();
