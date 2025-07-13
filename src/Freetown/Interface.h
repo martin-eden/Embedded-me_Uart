@@ -9,8 +9,6 @@
 
 #include <me_BaseTypes.h>
 
-#include "Bare/Interface.h"
-
 namespace me_Uart_Freetown
 {
   // Mode setter
@@ -46,7 +44,7 @@ namespace me_Uart_Freetown
       TBool GetSpeed(TUint_4 * Speed_Bps);
 
     protected:
-      void SetBitDuration_ut(me_Uart_Bare::TBitDuration BitDuration);
+      void SetBitDuration_ut(TUint_2 BitDuration);
       void SetNormalSpeed();
       void SetDoubleSpeed();
   };

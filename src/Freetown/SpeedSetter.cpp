@@ -36,8 +36,14 @@ using namespace me_Uart_Freetown;
 
 using me_Uart_Bare::Uart;
 
-// Quite generic function to do core calculation
-TBool EstimateLength(
+/*
+  Calculate how many units can be fit in given length
+
+  Helper.
+
+  Used for calculating bit duration.
+*/
+TBool GetNumUnitsForLength(
   TUint_4 * NumUnits,
   TUint_4 Length,
   TUint_4 UnitSize
@@ -57,8 +63,8 @@ TBool EstimateLength(
 
   Internal structure.
 
-  Speed as described as number of time units
-  and unit size.
+  Speed is described as number of time units
+  and unit size (normal or double-size).
 */
 struct TSpeedSetting
 {
@@ -92,7 +98,7 @@ TBool CalculateBitDuration_ut(
   UsedDoubleUnits = false;
 
   // Calculate duration
-  if (!EstimateLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
+  if (!GetNumUnitsForLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
     return false;
 
   // Speed too slow:
@@ -103,7 +109,7 @@ TBool CalculateBitDuration_ut(
     UsedDoubleUnits = true;
 
     // Calculate duration
-    if (!EstimateLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
+    if (!GetNumUnitsForLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
       return false;
 
     // Speed still too slow. Fail
@@ -121,14 +127,15 @@ TBool CalculateBitDuration_ut(
   return true;
 }
 
-// Set transceiver speed
+/*
+  Set transceiver speed
+*/
 TBool TSpeedSetter::SetSpeed(
   TUint_4 Speed_Bps
 )
 {
   TSpeedSetting SpeedSetting;
   TBool IsOkay;
-  me_Uart_Bare::TBitDuration BitDuration;
 
   IsOkay = CalculateBitDuration_ut(&SpeedSetting, Speed_Bps);
 
@@ -136,9 +143,7 @@ TBool TSpeedSetter::SetSpeed(
     return false;
 
   // assert( 1 <= SpeedSetting.BitDuration_ut <= 4096 )
-  BitDuration.Value = SpeedSetting.BitDuration_ut - 1;
-
-  SetBitDuration_ut(BitDuration);
+  SetBitDuration_ut(SpeedSetting.BitDuration_ut - 1);
 
   if (SpeedSetting.UseNormalSpeed)
     SetNormalSpeed();
@@ -158,14 +163,14 @@ TBool TSpeedSetter::GetSpeed(
   TUint_2 BitDuration;
   TUint_1 TicksPerCycle;
 
-  BitDuration = Uart->BitDuration.Value + 1;
+  BitDuration = Uart->BitDuration.Duration + 1;
 
   if (Uart->UseDoubleSpeed)
     TicksPerCycle = 8;
   else
     TicksPerCycle = 16;
 
-  return EstimateLength(Speed_Bps, F_CPU / TicksPerCycle, BitDuration);
+  return GetNumUnitsForLength(Speed_Bps, F_CPU / TicksPerCycle, BitDuration);
 }
 
 /*
@@ -173,25 +178,39 @@ TBool TSpeedSetter::GetSpeed(
 
   Custom time unit. Not all durations can be set.
 
-  We're setting limit value for (0, N) "for" loop.
+  We're setting "N" value for "for" loop from 0 to N.
   So it will always run at least once.
 */
 void TSpeedSetter::SetBitDuration_ut(
-  me_Uart_Bare::TBitDuration BitDuration
+  TUint_2 BitDuration
 )
 {
-  // Hardware magic occurs when writing low byte
-  Uart->BitDuration.Value_HighByte = BitDuration.Value_HighByte;
-  Uart->BitDuration.Value_LowByte = BitDuration.Value_LowByte;
+  /*
+    Hardware magic occurs when writing low byte to that USART register
+
+    So we're going into trouble of converting word to record.
+    To be sure that low byte of that word is written last.
+  */
+
+  me_Uart_Bare::TBitDuration DurationRec;
+
+  DurationRec.Duration = BitDuration;
+
+  Uart->BitDuration.Duration_HighByte = DurationRec.Duration_HighByte;
+  Uart->BitDuration.Duration_LowByte = DurationRec.Duration_LowByte;
 }
 
-// Use normal transceiver speed
+/*
+  Use normal transceiver speed
+*/
 void TSpeedSetter::SetNormalSpeed()
 {
   Uart->UseDoubleSpeed = false;
 }
 
-// Use double transceiver speed
+/*
+  Use double transceiver speed
+*/
 void TSpeedSetter::SetDoubleSpeed()
 {
   Uart->UseDoubleSpeed = true;
