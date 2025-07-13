@@ -1,6 +1,6 @@
 # What
 
-(2024-10/2024-11)
+(2024-10/2024-11, 2025-07)
 
 UART transceiver. Arduino library. 2 Mbps.
 
@@ -10,7 +10,7 @@ Another dive to low-level programming.
 
 Demo on 2 Mbps.
 
-That's a bare-bones [example][Example] to test memory footprint and
+That's a bare-bones [example][SpeedDemo] to test memory footprint and
 code size. (For 2024-11-09 required memory is `9` bytes and
 code size is `542` bytes.)
 
@@ -61,24 +61,29 @@ arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-prop
 
 ## Code
 
-* [Example][Example]
 * Interface
-  * [Frontend][Interface_front]
-  * [Backend][Interface_back]
+  * [Back][Interface_back]
+  * [Mid][Interface_mid]
+  * [Front][Interface_front]
 * Implementation
-  * [Frontend][Implementation_front]
-  * [Backend][Implementation_back] (implementation is separated by modules)
+  * [Back][Implementation_back]
+  * [Mid][Implementation_mid] (separated by modules)
+  * [Front][Implementation_front]
+* [Examples][Examples]
 
 ## See also
 
 * [My other embedded C++ libraries][Embedded]
 * [My other repositories][Repos]
 
-[Example]: examples/me_Uart/me_Uart.ino
+[Interface_back]: src/Bare/Interface.h
+[Interface_mid]: src/Freetown/Interface.h
 [Interface_front]: src/me_Uart.h
-[Interface_back]: src/me_Uart_Freetown.h
+[Implementation_back]: src/Bare/Mapping.cpp
+[Implementation_mid]: src/Freetown/
 [Implementation_front]: src/me_Uart.cpp
-[Implementation_back]: src/
+[Examples]: examples/
+[SpeedDemo]: examples/me_Uart/me_Uart.ino
 
 [me_Console]: https://github.com/martin-eden/Embedded-me_Console
 [me_InstallStandardStreams]: https://github.com/martin-eden/Embedded-me_InstallStandardStreams
