@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-15
+  Last mod.: 2025-07-13
 */
 
 /*
@@ -24,7 +24,7 @@
 TBool GetRealSpeed(TUint_4 * Speed_Bps)
 {
   using
-    me_Uart::Freetown::TSpeedSetter;
+    me_Uart_Freetown::TSpeedSetter;
 
   TSpeedSetter SpeedSetter;
 
@@ -56,4 +56,5 @@ void loop()
 
 /*
   2024-12-13
+  2025-07-13
 */
