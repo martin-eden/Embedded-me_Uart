@@ -2,10 +2,10 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-18
+  Last mod.: 2025-07-13
 */
 
-#include "me_Uart.h"
+#include <me_Uart.h>
 
 #include <me_BaseTypes.h>
 #include <me_Uart_Freetown.h>
@@ -17,11 +17,11 @@ TBool me_Uart::Init(
   TUint_4 Speed_Bps
 )
 {
-  Freetown::TModeSetter ModeSetter;
-  Freetown::TFrameSetter FrameSetter;
-  Freetown::TSpeedSetter SpeedSetter;
-  Freetown::TTransmitter Transmitter;
-  Freetown::TReceiver Receiver;
+  me_Uart_Freetown::TModeSetter ModeSetter;
+  me_Uart_Freetown::TFrameSetter FrameSetter;
+  me_Uart_Freetown::TSpeedSetter SpeedSetter;
+  me_Uart_Freetown::TTransmitter Transmitter;
+  me_Uart_Freetown::TReceiver Receiver;
 
   Receiver.Off();
   Transmitter.Off();
@@ -51,7 +51,7 @@ void me_Uart::SendByte(
   TUint_1 Value
 )
 {
-  Freetown::TTransmitter Transmitter;
+  me_Uart_Freetown::TTransmitter Transmitter;
 
   // This "while" shouldn't take long
   while (!Transmitter.IsReady());
@@ -64,7 +64,7 @@ TBool me_Uart::GetByte(
   TUint_1 * Value
 )
 {
-  Freetown::TReceiver Receiver;
+  me_Uart_Freetown::TReceiver Receiver;
 
   /*
     There is hardware magic at accessing transceiver buffer.
@@ -116,5 +116,6 @@ TBool me_Uart::Op_PutByte(
 /*
   2024-10 # # #
   2024-11 #
-  2024-12-18
+  2024-12 #
+  2025-07-13
 */

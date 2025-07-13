@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-19
+  Last mod.: 2025-07-13
 */
 
 /*
@@ -28,11 +28,13 @@
            Duration
 */
 
-#include <me_Uart.h>
-
 #include <me_Uart_Freetown.h>
 
-using namespace me_Uart::Freetown;
+#include <me_Uart_Bare.h>
+
+using namespace me_Uart_Freetown;
+
+using me_Uart_Bare::Uart;
 
 // Quite generic function to do core calculation
 TBool EstimateLength(
@@ -126,7 +128,7 @@ TBool TSpeedSetter::SetSpeed(
 {
   TSpeedSetting SpeedSetting;
   TBool IsOkay;
-  TBitDuration BitDuration;
+  me_Uart_Bare::TBitDuration BitDuration;
 
   IsOkay = CalculateBitDuration_ut(&SpeedSetting, Speed_Bps);
 
@@ -175,7 +177,7 @@ TBool TSpeedSetter::GetSpeed(
   So it will always run at least once.
 */
 void TSpeedSetter::SetBitDuration_ut(
-  TBitDuration BitDuration
+  me_Uart_Bare::TBitDuration BitDuration
 )
 {
   // Hardware magic occurs when writing low byte
@@ -198,6 +200,6 @@ void TSpeedSetter::SetDoubleSpeed()
 /*
   2024-10 # #
   2024-11 # # #
-  2024-12-13
-  2024-12-15
+  2024-12 # #
+  2025-07-13
 */

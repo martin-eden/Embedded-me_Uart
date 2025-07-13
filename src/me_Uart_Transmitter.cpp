@@ -2,14 +2,14 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-19
+  Last mod.: 2025-07-13
 */
 
 /*
                          Transmitter
   -----------------------------------------------------------
        |                 Data                   |
-   On  |     7   6   5   4   3   2   1   0      | (*) Ready
+   On  |     7   6   5   4   3   2   1   0      | (o) Ready
    [x] |    [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]     |  ______
     |  |     |   |   |   |   |   |   |   |      | | Send |
    [ ] |    [x] [x] [x] [x] [x] [x] [x] [x]     | `~~~~~~'
@@ -17,11 +17,13 @@
   -----------------------------------------------------------
 */
 
-#include <me_Uart.h>
-
 #include <me_Uart_Freetown.h>
 
-using namespace me_Uart::Freetown;
+#include <me_Uart_Bare.h>
+
+using namespace me_Uart_Freetown;
+
+using me_Uart_Bare::Uart;
 
 void TTransmitter::On()
 {
@@ -45,4 +47,6 @@ void TTransmitter::Put(TUint_1 Data)
 
 /*
   2024-11 #
+  2024-12 #
+  2025-07-13
 */

@@ -2,27 +2,29 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-19
+  Last mod.: 2025-07-13
 */
 
 /*
    Receiver            Interrupts
   -------------       -------------
-  (*) Has data  -[ ]-
+  (o) Has data  -[ ]-
   -------------       -------------
 
    Transmitter           Interrupts
   ---------------       -------------
-  (*) Ready       -[ ]-
-  (*) Frame sent  -[ ]-
+  (o) Ready       -[ ]-
+  (o) Frame sent  -[ ]-
   ---------------       -------------
 */
 
-#include <me_Uart.h>
-
 #include <me_Uart_Freetown.h>
 
-using namespace me_Uart::Freetown;
+#include <me_Uart_Bare.h>
+
+using namespace me_Uart_Freetown;
+
+using me_Uart_Bare::Uart;
 
 // Enable interrupt when data frame received
 void TReceivedDataInterrupt::On()
@@ -62,4 +64,5 @@ void TSentDataInterrupt::Off()
 
 /*
   2024-11 # #
+  2025-07-13
 */

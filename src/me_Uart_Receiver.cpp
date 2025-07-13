@@ -2,14 +2,14 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-19
+  Last mod.: 2025-07-13
 */
 
 /*
                          Receiver
   -----------------------------------------------------------
        |               Data                |
-   On  |                                   | (*) Has data
+   On  |                                   | (o) Has data
    [x] |   7   6   5   4   3   2   1   0   | (o) With errors
     |  |  (o) (o) (o) (o) (o) (o) (o) (o)  |    __________
    [ ] |                                   |   | Get next |
@@ -17,11 +17,13 @@
   -----------------------------------------------------------
 */
 
-#include <me_Uart.h>
-
 #include <me_Uart_Freetown.h>
 
-using namespace me_Uart::Freetown;
+#include <me_Uart_Bare.h>
+
+using namespace me_Uart_Freetown;
+
+using me_Uart_Bare::Uart;
 
 void TReceiver::On()
 {
@@ -50,4 +52,5 @@ TUint_1 TReceiver::Get()
 
 /*
   2024-11 #
+  2025-07-13
 */

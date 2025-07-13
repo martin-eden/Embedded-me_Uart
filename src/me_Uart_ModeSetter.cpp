@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-19
+  Last mod.: 2025-07-13
 */
 
 /*
@@ -20,13 +20,17 @@
    ------------------------
 */
 
-#include <me_Uart.h>
-
 #include <me_Uart_Freetown.h>
 
-using namespace me_Uart::Freetown;
+#include <me_Uart_Bare.h>
 
-// Set asynchronous UART mode
+using namespace me_Uart_Freetown;
+
+using me_Uart_Bare::Uart;
+
+/*
+  Set asynchronous UART mode
+*/
 void TModeSetter::SetAsyncMode()
 {
   Uart->TransceiverMode = 0;
@@ -47,4 +51,5 @@ void TModeSetter::ClearPolarityBit()
 
 /*
   2024-11 #
+  2025-07-13
 */
