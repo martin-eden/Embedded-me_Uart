@@ -37,6 +37,8 @@ void setup()
   if (!me_Uart::Init(115200))
     return;
 
+  Console.Print("[GetSpeed] Calculates real transmission speed");
+
   TUint_4 RealSpeed;
 
   if (!GetRealSpeed(&RealSpeed))
@@ -48,6 +50,8 @@ void setup()
   Console.Write("Real speed is (bps)");
   Console.Print(RealSpeed);
   Console.EndLine();
+
+  Console.Print("Done.");
 }
 
 void loop()
