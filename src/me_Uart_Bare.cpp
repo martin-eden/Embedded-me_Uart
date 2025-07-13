@@ -16,7 +16,7 @@
   error.
 
   So yeah, lets create one-line .cpp file to be sure assignment
-  is only done once.
+  is done only once.
 */
 me_Uart_Bare::TUart * me_Uart_Bare::Uart = (me_Uart_Bare::TUart *) 192;
 
