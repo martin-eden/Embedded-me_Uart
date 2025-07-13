@@ -19,7 +19,7 @@
 
 #include <me_Uart.h>
 
-#include <me_Uart_Freetown.h> // low-level module with fancy stuff
+#include "Freetown/Interface.h" // low-level module with fancy stuff
 
 TBool GetRealSpeed(TUint_4 * Speed_Bps)
 {
