@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-08-25
 */
 
 #include <me_Uart.h>
@@ -93,18 +93,16 @@ void me_Uart::WaitByte(
   while (!GetByte(Value));
 }
 
-// ( Wrappers for TOperation
+// ( Wrappers for TFixedOperation
 TBool me_Uart::Op_GetByte(
-  TAddress Data,
-  TAddress Unused [[gnu::unused]]
+  TAddress Data
 )
 {
   return GetByte((TUint_1 *) Data);
 }
 
 TBool me_Uart::Op_PutByte(
-  TAddress Data,
-  TAddress Unused [[gnu::unused]]
+  TAddress Data
 )
 {
   SendByte(*(TUint_1 *) Data);
@@ -115,8 +113,7 @@ TBool me_Uart::Op_PutByte(
 // )
 
 /*
-  2024-10 # # #
-  2024-11 #
-  2024-12 #
+  2024-10 # # # # #
   2025-07-13
+  2025-08-25
 */

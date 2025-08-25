@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-18
+  Last mod.: 2025-08-25
 */
 
 /*
@@ -18,7 +18,7 @@ namespace me_Uart
   /*
     Typical UART connection speeds
 
-    Here are only values that I consider practical (in 2024).
+    Here are only values that I consider practical (in 2025).
   */
   const TUint_4
     Speed_9k_Bps = 9600,
@@ -41,22 +41,13 @@ namespace me_Uart
   // Await byte. Maybe forever
   void WaitByte(TUint_1 * Value);
 
-  // ( Wrappers as TOperation
-  TBool Op_GetByte(TAddress Data, TAddress Unused);
-  TBool Op_PutByte(TAddress Data, TAddress Unused);
+  // ( Wrappers as TFixedOperation
+  TBool Op_GetByte(TAddress Data);
+  TBool Op_PutByte(TAddress Data);
   // )
 }
 
 /*
-  ( UartSpeeds
-  2024-03 #
-  2024-04 #
-  2024-09 #
-  2024-10 #
-  2024-11 #
-  )
-  2024-10 # # # #
-  2024-11 # #
-  2024-12-18
-  2024-12-19
+  2024 # # # # # # # # # # # # #
+  2025-08-25
 */
