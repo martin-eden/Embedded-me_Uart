@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-25
+  Last mod.: 2025-08-26
 */
 
 #include <me_Uart.h>
@@ -13,7 +13,11 @@
 
 using namespace me_Uart;
 
-// Set-up for given speed (no parity, 8 data bits, 1 stop bit)
+/*
+  Set-up for given speed
+
+  No parity, 8 data bits, 1 stop bit.
+*/
 TBool me_Uart::Init(
   TUint_4 Speed_Bps
 )
@@ -47,20 +51,9 @@ TBool me_Uart::Init(
   return true;
 }
 
-// Send byte
-void me_Uart::SendByte(
-  TUint_1 Value
-)
-{
-  me_Uart_Freetown::TTransmitter Transmitter;
-
-  // This "while" shouldn't take long
-  while (!Transmitter.IsReady());
-
-  Transmitter.Put(Value);
-}
-
-// Receive byte
+/*
+  Receive byte
+*/
 TBool me_Uart::GetByte(
   TUint_1 * Value
 )
@@ -85,7 +78,26 @@ TBool me_Uart::GetByte(
   return true;
 }
 
-// Await byte. Maybe forever
+/*
+  Send byte
+*/
+void me_Uart::SendByte(
+  TUint_1 Value
+)
+{
+  me_Uart_Freetown::TTransmitter Transmitter;
+
+  // This "while" shouldn't take long
+  while (!Transmitter.IsReady());
+
+  Transmitter.Put(Value);
+}
+
+/*
+  Await byte
+
+  Maybe forever.
+*/
 void me_Uart::WaitByte(
   TUint_1 * Value
 )
@@ -93,7 +105,9 @@ void me_Uart::WaitByte(
   while (!GetByte(Value));
 }
 
-// ( Wrappers for TFixedOperation
+/*
+  Get byte operation
+*/
 TBool me_Uart::Op_GetByte(
   TAddress Data
 )
@@ -101,6 +115,9 @@ TBool me_Uart::Op_GetByte(
   return GetByte((TUint_1 *) Data);
 }
 
+/*
+  Put byte operation
+*/
 TBool me_Uart::Op_PutByte(
   TAddress Data
 )
@@ -110,10 +127,21 @@ TBool me_Uart::Op_PutByte(
   return true;
 }
 
-// )
+/*
+  Output stream, write byte
+*/
+TBool TOutputStream::Write(
+  TUnit Unit
+)
+{
+  SendByte((TUint_1) Unit);
+
+  return true;
+}
 
 /*
-  2024-10 # # # # #
+  2024 # # # # #
   2025-07-13
   2025-08-25
+  2025-08-26
 */
