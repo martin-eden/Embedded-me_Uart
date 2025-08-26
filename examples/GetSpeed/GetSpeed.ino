@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-08-26
 */
 
 /*
@@ -14,34 +14,23 @@
   knowing bit duration and CPU frequency.
 */
 
-#include <me_BaseTypes.h>
-#include <me_Console.h>
-
 #include <me_Uart.h>
 
-#include "Freetown/Interface.h" // low-level module with fancy stuff
+#include <me_BaseTypes.h>
+#include <me_Console.h>
+#include <Freetown/Interface.h> // for Speed Setter access
 
-TBool GetRealSpeed(TUint_4 * Speed_Bps)
+/*
+  Get real transmission speed
+
+  Real speed is determined by UART hardware delay counters.
+*/
+void GetRealSpeedTest()
 {
-  using
-    me_Uart_Freetown::TSpeedSetter;
-
-  TSpeedSetter SpeedSetter;
-
-  return SpeedSetter.GetSpeed(Speed_Bps);
-}
-
-void setup()
-{
-  // Works from 300 to 2000000 speeds. Amazing
-  if (!me_Uart::Init(115200))
-    return;
-
-  Console.Print("[GetSpeed] Calculates real transmission speed");
-
+  me_Uart_Freetown::TSpeedSetter SpeedSetter;
   TUint_4 RealSpeed;
 
-  if (!GetRealSpeed(&RealSpeed))
+  if (!SpeedSetter.GetSpeed(&RealSpeed))
   {
     Console.Print("Failed to get real speed.");
     return;
@@ -50,6 +39,19 @@ void setup()
   Console.Write("Real speed is (bps)");
   Console.Print(RealSpeed);
   Console.EndLine();
+}
+
+void setup()
+{
+  Console.Init();
+
+  // Works from 300 to 2000000 speeds. Amazing
+  if (!me_Uart::Init(115200))
+    return;
+
+  Console.Print("[GetSpeed] Calculate real transmission speed");
+
+  GetRealSpeedTest();
 
   Console.Print("Done.");
 }
@@ -59,6 +61,7 @@ void loop()
 }
 
 /*
-  2024-12-13
+  2024 #
   2025-07-13
+  2025-08-26
 */
