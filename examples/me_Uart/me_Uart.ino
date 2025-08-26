@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-19
+  Last mod.: 2025-08-26
 */
 
 /*
@@ -18,49 +18,49 @@
 /*
   Footprint
 
-    Memory   Size     Date
-      9       542  2024-11-09
+    Memory  Size     Date         Changes note
+      9      542  2024-11-09
+      9      544  2025-08-26  Changed speed to 115k
 */
 
 #include <me_Uart.h>
 
 #include <me_BaseTypes.h>
 
+/*
+  Echo test
+*/
+void EchoTest()
+{
+  TUint_1 Byte;
+
+  me_Uart::SendByte('>');
+
+  while (true)
+  {
+    me_Uart::WaitByte(&Byte);
+
+    if (Byte == '^')
+      break;
+
+    me_Uart::SendByte(Byte);
+  }
+
+  me_Uart::SendByte('<');
+}
+
 void setup()
 {
-  RunTest();
+  me_Uart::Init(me_Uart::Speed_115k_Bps);
+
+  EchoTest();
 }
 
 void loop()
 {
 }
 
-// --
-
-void RunTest()
-{
-  using namespace me_Uart;
-
-  TUint_1 Byte;
-
-  Init(Speed_2M_Bps);
-
-  SendByte('>');
-
-  while (true)
-  {
-    WaitByte(&Byte);
-
-    if (Byte == '^')
-      break;
-
-    SendByte(Byte);
-  }
-
-  SendByte('<');
-}
-
 /*
-  2024-10 # # # #
-  2024-12-19
+  2024 # # # # #
+  2025-08-26
 */
