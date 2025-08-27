@@ -2,13 +2,13 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-26
+  Last mod.: 2025-08-27
 */
 
 #pragma once
 
 #include <me_BaseTypes.h>
-#include <me_Streams.h>
+#include <me_BaseInterfaces.h>
 
 namespace me_Uart
 {
@@ -44,7 +44,7 @@ namespace me_Uart
   // )
 
   // Wrapping output as stream
-  class TOutputStream : public me_Streams::IOutputStream
+  class TOutputStream : public IOutputStream
   {
     public:
       TBool Write(TUnit Unit) override;
