@@ -2,20 +2,19 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-27
+  Last mod.: 2025-08-29
 */
 
 #pragma once
 
 #include <me_BaseTypes.h>
-#include <me_BaseInterfaces.h>
 
 namespace me_Uart
 {
   /*
     Typical UART connection speeds
 
-    Here are only values that I consider practical in 2025.
+    Here are only values that we consider practical in 2025.
   */
   const TUint_4
     Speed_9k_Bps = 9600,
@@ -35,23 +34,12 @@ namespace me_Uart
   // Send byte
   void SendByte(TUint_1 Value);
 
-  // Await byte. Maybe forever
+  // Wait byte. Maybe forever
   void WaitByte(TUint_1 * Value);
-
-  // ( Read/write as TFixedOperation
-  TBool Op_GetByte(TAddress Data);
-  TBool Op_PutByte(TAddress Data);
-  // )
-
-  // Wrapping output as stream
-  class TOutputStream : public IOutputStream
-  {
-    public:
-      TBool Write(TUnit Unit) override;
-  };
 }
 
 /*
   2024 # # # # # # # # # # # # #
   2025-08-25
+  2025-08-29
 */

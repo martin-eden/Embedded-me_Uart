@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-26
+  Last mod.: 2025-08-29
 */
 
 #include <me_Uart.h>
@@ -106,42 +106,9 @@ void me_Uart::WaitByte(
 }
 
 /*
-  Get byte operation
-*/
-TBool me_Uart::Op_GetByte(
-  TAddress Data
-)
-{
-  return GetByte((TUint_1 *) Data);
-}
-
-/*
-  Put byte operation
-*/
-TBool me_Uart::Op_PutByte(
-  TAddress Data
-)
-{
-  SendByte(*(TUint_1 *) Data);
-
-  return true;
-}
-
-/*
-  Output stream, write byte
-*/
-TBool TOutputStream::Write(
-  TUnit Unit
-)
-{
-  SendByte((TUint_1) Unit);
-
-  return true;
-}
-
-/*
   2024 # # # # #
   2025-07-13
   2025-08-25
   2025-08-26
+  2025-08-29
 */
