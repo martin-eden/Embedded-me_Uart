@@ -1,8 +1,8 @@
-// Mapping USART structure to address
+// Linking USART structure to address
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-09-05
 */
 
 #include "Bare/Interface.h"
