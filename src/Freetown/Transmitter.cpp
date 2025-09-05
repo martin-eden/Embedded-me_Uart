@@ -2,19 +2,22 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-09-05
 */
 
 /*
                          Transmitter
-  -----------------------------------------------------------
+  ---------------------------------------------------------------
        |                 Data                   |
    On  |     7   6   5   4   3   2   1   0      | (o) Ready
    [x] |    [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]     |  ______
     |  |     |   |   |   |   |   |   |   |      | | Send |
    [ ] |    [x] [x] [x] [x] [x] [x] [x] [x]     | `~~~~~~'
-       |                                        |
-  -----------------------------------------------------------
+       |                                        | (o) Sent
+       |                                        |  ____________
+       |                                        | | Clear Sent |
+       |                                        | `~~~~~~~~~~~~'
+  ---------------------------------------------------------------
 */
 
 #include "Freetown/Interface.h"
@@ -40,13 +43,23 @@ TBool TTransmitter::IsReady()
   return Uart->ReadyToSend;
 }
 
+TBool TTransmitter::IsSent()
+{
+  return Uart->Sent;
+}
+
+void TTransmitter::ClearSentFlag()
+{
+  Uart->Sent = true;
+}
+
 void TTransmitter::Put(TUint_1 Data)
 {
   Uart->Buffer = Data;
 }
 
 /*
-  2024-11 #
-  2024-12 #
+  2024 # #
   2025-07-13
+  2025-09-05
 */

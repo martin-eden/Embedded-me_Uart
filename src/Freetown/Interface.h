@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-09-05
 */
 
 #pragma once
@@ -93,14 +93,15 @@ namespace me_Uart_Freetown
       void Off();
       TBool IsReady();
       void Put(TUint_1 Data);
+      TBool IsSent();
+      void ClearSentFlag();
       TReadyToSendInterrupt IsReadyInterrupt;
       TSentDataInterrupt FrameSentInterrupt;
   };
 }
 
 /*
-  2024-10 # # # #
-  2024-11 # # # #
-  2024-12 #
+  2024-10 # # # # # # # # #
   2025-07-13
+  2025-09-05
 */
