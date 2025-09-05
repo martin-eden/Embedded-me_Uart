@@ -87,10 +87,12 @@ void me_Uart::SendByte(
 {
   me_Uart_Freetown::TTransmitter Transmitter;
 
-  // This "while" shouldn't take long
   while (!Transmitter.IsReady());
 
   Transmitter.Put(Value);
+
+  while (!Transmitter.IsSent());
+  Transmitter.ClearSentFlag();
 }
 
 /*
