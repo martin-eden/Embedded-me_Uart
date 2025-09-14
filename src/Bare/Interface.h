@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-09-14
 */
 
 #pragma once
@@ -65,7 +65,7 @@ namespace me_Uart_Bare
     TUint_1 Buffer : 8;
   };
 
-  // Mapping to address. Actually done in "me_Uart_Bare.cpp"
+  // Mapping to address
   extern TUart * Uart;
 }
 
