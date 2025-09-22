@@ -2,12 +2,13 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-05
+  Last mod.: 2025-09-22
 */
 
 #pragma once
 
 #include <me_BaseTypes.h>
+#include <me_Switch.h>
 
 namespace me_Uart_Freetown
 {
@@ -50,47 +51,59 @@ namespace me_Uart_Freetown
   };
 
   // Interrupt when data frame received
-  class TReceivedDataInterrupt
+  class TReceivedDataInterrupt : public me_Switch::TSwitch
   {
-    public:
-      void On();
-      void Off();
+    protected:
+      void Get(TBool *) override;
+      void Set(TBool) override;
   };
 
   // Interrupt when data frame sent
-  class TSentDataInterrupt
+  class TSentDataInterrupt : public me_Switch::TSwitch
   {
-    public:
-      void On();
-      void Off();
+    protected:
+      void Get(TBool *) override;
+      void Set(TBool) override;
   };
 
   // Interrupt when transmitter is ready for new data
-  class TReadyToSendInterrupt
+  class TReadyToSendInterrupt : public me_Switch::TSwitch
   {
-    public:
-      void On();
-      void Off();
+    protected:
+      void Get(TBool *) override;
+      void Set(TBool) override;
+  };
+
+  class TReceiverSwitch : public me_Switch::TSwitch
+  {
+    protected:
+      void Get(TBool *) override;
+      void Set(TBool) override;
   };
 
   // Receiver
   class TReceiver
   {
     public:
-      void On();
-      void Off();
+      TReceiverSwitch Switch;
       TBool HasData();
       TBool AreErrors();
       TUint_1 Get();
       TReceivedDataInterrupt HasDataInterrupt;
   };
 
+  class TTransmitterSwitch : public me_Switch::TSwitch
+  {
+    protected:
+      void Get(TBool *) override;
+      void Set(TBool) override;
+  };
+
   // Transmitter
   class TTransmitter
   {
     public:
-      void On();
-      void Off();
+      TTransmitterSwitch Switch;
       TBool IsReady();
       void Put(TUint_1 Data);
       TBool IsSent();

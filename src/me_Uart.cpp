@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-29
+  Last mod.: 2025-09-22
 */
 
 #include <me_Uart.h>
@@ -28,8 +28,8 @@ TBool me_Uart::Init(
   me_Uart_Freetown::TFrameSetter FrameSetter;
   me_Uart_Freetown::TSpeedSetter SpeedSetter;
 
-  Receiver.Off();
-  Transmitter.Off();
+  Receiver.Switch.Off();
+  Transmitter.Switch.Off();
 
   ModeSetter.SetAsyncMode();
 
@@ -45,8 +45,8 @@ TBool me_Uart::Init(
   Transmitter.IsReadyInterrupt.Off();
   Transmitter.FrameSentInterrupt.Off();
 
-  Receiver.On();
-  Transmitter.On();
+  Receiver.Switch.On();
+  Transmitter.Switch.On();
 
   return true;
 }

@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-09-22
 */
 
 /*
@@ -26,43 +26,56 @@ using namespace me_Uart_Freetown;
 
 using me_Uart_Bare::Uart;
 
-// Enable interrupt when data frame received
-void TReceivedDataInterrupt::On()
+// ( Interrupt when received data
+void TReceivedDataInterrupt::Get(
+  TBool * State
+)
 {
-  Uart->EnableOnReceivedInterrupt = true;
+  *State = Uart->EnableOnReceivedInterrupt;
 }
 
-// Disable interrupt when data frame received
-void TReceivedDataInterrupt::Off()
+void TReceivedDataInterrupt::Set(
+  TBool State
+)
 {
-  Uart->EnableOnReceivedInterrupt = false;
+  Uart->EnableOnReceivedInterrupt = State;
+}
+// )
+
+// ( Interrupt when no data to send
+void TReadyToSendInterrupt::Get(
+  TBool * State
+)
+{
+  *State = Uart->EnableOnReadyToSendInterrupt;
 }
 
-// Enable interrupt when no data to send
-void TReadyToSendInterrupt::On()
+void TReadyToSendInterrupt::Set(
+  TBool State
+)
 {
-  Uart->EnableOnReadyToSendInterrupt = true;
+  Uart->EnableOnReadyToSendInterrupt = State;
+}
+// )
+
+// ( Interrupt when data frame sent
+void TSentDataInterrupt::Get(
+  TBool * State
+)
+{
+  *State = Uart->EnableOnSentInterrupt;
 }
 
-// Disable interrupt when no data to send
-void TReadyToSendInterrupt::Off()
+void TSentDataInterrupt::Set(
+  TBool State
+)
 {
-  Uart->EnableOnReadyToSendInterrupt = false;
+  Uart->EnableOnSentInterrupt = State;
 }
-
-// Enable interrupt when data frame sent
-void TSentDataInterrupt::On()
-{
-  Uart->EnableOnSentInterrupt = true;
-}
-
-// Disable interrupt when data frame sent
-void TSentDataInterrupt::Off()
-{
-  Uart->EnableOnSentInterrupt = false;
-}
+// )
 
 /*
   2024-11 # #
   2025-07-13
+  2025-09-22 Using Switch interface
 */

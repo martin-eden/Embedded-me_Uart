@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-05
+  Last mod.: 2025-09-22
 */
 
 /*
@@ -28,15 +28,21 @@ using namespace me_Uart_Freetown;
 
 using me_Uart_Bare::Uart;
 
-void TTransmitter::On()
+// ( Transmitter switch
+void TTransmitterSwitch::Get(
+  TBool * State
+)
 {
-  Uart->EnableTransmitter = true;
+  *State = Uart->EnableTransmitter;
 }
 
-void TTransmitter::Off()
+void TTransmitterSwitch::Set(
+  TBool State
+)
 {
-  Uart->EnableTransmitter = false;
+  Uart->EnableTransmitter = State;
 }
+// )
 
 TBool TTransmitter::IsReady()
 {
@@ -62,4 +68,5 @@ void TTransmitter::Put(TUint_1 Data)
   2024 # #
   2025-07-13
   2025-09-05
+  2025-09-22
 */
