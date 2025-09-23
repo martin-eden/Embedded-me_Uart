@@ -121,7 +121,7 @@ namespace me_Uart_Freetown
     public:
       TTransmitterSwitch Switch;
       TBool IsReady();
-      void Put(TUint_1 Data);
+      void Send(TUint_1 Data);
       TBool IsSent();
       void ClearSentFlag();
       TReadyToSendInterrupt IsReadyInterrupt;

@@ -89,7 +89,7 @@ void me_Uart::SendByte(
 
   while (!Transmitter.IsReady());
 
-  Transmitter.Put(Value);
+  Transmitter.Send(Value);
 
   while (!Transmitter.IsSent());
   Transmitter.ClearSentFlag();

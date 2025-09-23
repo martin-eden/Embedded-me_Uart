@@ -60,7 +60,9 @@ void TTransmitter::ClearSentFlag()
   Uart->Sent = true;
 }
 
-void TTransmitter::Put(TUint_1 Data)
+void TTransmitter::Send(
+  TUint_1 Data
+)
 {
   Uart->Buffer = Data;
 }
