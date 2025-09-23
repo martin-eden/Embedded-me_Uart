@@ -21,6 +21,7 @@
     Memory  Size     Date         Changes note
       9      542  2024-11-09
       9      544  2025-08-26  Changed speed to 115k
+      9      562  2025-09-23  Internal Switch class
 */
 
 #include <me_Uart.h>
