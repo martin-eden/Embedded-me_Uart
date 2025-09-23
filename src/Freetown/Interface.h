@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-22
+  Last mod.: 2025-09-23
 */
 
 #pragma once
@@ -50,35 +50,49 @@ namespace me_Uart_Freetown
       void SetDoubleSpeed();
   };
 
-  // Interrupt when data frame received
-  class TReceivedDataInterrupt : public me_Switch::TSwitch
+  // [Internal] Switch implementation without virtual methods
+  class TSwitch
   {
-    protected:
-      void Get(TBool *) override;
-      void Set(TBool) override;
+    public:
+      TBool IsOn();
+      void On();
+      void Off();
+  };
+
+  // Interrupt when data frame received
+  class TReceivedDataInterrupt : public TSwitch
+  {
+    public:
+      TBool IsOn();
+      void On();
+      void Off();
   };
 
   // Interrupt when data frame sent
-  class TSentDataInterrupt : public me_Switch::TSwitch
+  class TSentDataInterrupt : public TSwitch
   {
-    protected:
-      void Get(TBool *) override;
-      void Set(TBool) override;
+    public:
+      TBool IsOn();
+      void On();
+      void Off();
   };
 
   // Interrupt when transmitter is ready for new data
-  class TReadyToSendInterrupt : public me_Switch::TSwitch
+  class TReadyToSendInterrupt : public TSwitch
   {
-    protected:
-      void Get(TBool *) override;
-      void Set(TBool) override;
+    public:
+      TBool IsOn();
+      void On();
+      void Off();
   };
 
-  class TReceiverSwitch : public me_Switch::TSwitch
+  // Receiver switch
+  class TReceiverSwitch : public TSwitch
   {
-    protected:
-      void Get(TBool *) override;
-      void Set(TBool) override;
+    public:
+      TBool IsOn();
+      void On();
+      void Off();
   };
 
   // Receiver
@@ -92,11 +106,13 @@ namespace me_Uart_Freetown
       TReceivedDataInterrupt HasDataInterrupt;
   };
 
-  class TTransmitterSwitch : public me_Switch::TSwitch
+  // Transmitter switch
+  class TTransmitterSwitch : public TSwitch
   {
-    protected:
-      void Get(TBool *) override;
-      void Set(TBool) override;
+    public:
+      TBool IsOn();
+      void On();
+      void Off();
   };
 
   // Transmitter
@@ -117,4 +133,6 @@ namespace me_Uart_Freetown
   2024-10 # # # # # # # # #
   2025-07-13
   2025-09-05
+  2025-09-22
+  2025-09-23
 */

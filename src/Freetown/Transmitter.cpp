@@ -29,18 +29,19 @@ using namespace me_Uart_Freetown;
 using me_Uart_Bare::Uart;
 
 // ( Transmitter switch
-void TTransmitterSwitch::Get(
-  TBool * State
-)
+TBool TTransmitterSwitch::IsOn()
 {
-  *State = Uart->EnableTransmitter;
+  return Uart->EnableTransmitter;
 }
 
-void TTransmitterSwitch::Set(
-  TBool State
-)
+void TTransmitterSwitch::On()
 {
-  Uart->EnableTransmitter = State;
+  Uart->EnableTransmitter = true;
+}
+
+void TTransmitterSwitch::Off()
+{
+  Uart->EnableTransmitter = false;
 }
 // )
 

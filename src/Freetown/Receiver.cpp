@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-22
+  Last mod.: 2025-09-23
 */
 
 /*
@@ -26,18 +26,19 @@ using namespace me_Uart_Freetown;
 using me_Uart_Bare::Uart;
 
 // ( Receiver switch
-void TReceiverSwitch::Get(
-  TBool * State
-)
+TBool TReceiverSwitch::IsOn()
 {
-  *State = Uart->EnableReceiver;
+  return Uart->EnableReceiver;
 }
 
-void TReceiverSwitch::Set(
-  TBool State
-)
+void TReceiverSwitch::On()
 {
-  Uart->EnableReceiver = State;
+  Uart->EnableReceiver = true;
+}
+
+void TReceiverSwitch::Off()
+{
+  Uart->EnableReceiver = false;
 }
 // )
 
@@ -60,4 +61,5 @@ TUint_1 TReceiver::Get()
   2024-11 #
   2025-07-13
   2025-09-22
+  2025-09-23
 */

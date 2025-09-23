@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-22
+  Last mod.: 2025-09-23
 */
 
 /*
@@ -27,50 +27,53 @@ using namespace me_Uart_Freetown;
 using me_Uart_Bare::Uart;
 
 // ( Interrupt when received data
-void TReceivedDataInterrupt::Get(
-  TBool * State
-)
+TBool TReceivedDataInterrupt::IsOn()
 {
-  *State = Uart->EnableOnReceivedInterrupt;
+  return Uart->EnableOnReceivedInterrupt;
 }
 
-void TReceivedDataInterrupt::Set(
-  TBool State
-)
+void TReceivedDataInterrupt::On()
 {
-  Uart->EnableOnReceivedInterrupt = State;
+  Uart->EnableOnReceivedInterrupt = true;
+}
+
+void TReceivedDataInterrupt::Off()
+{
+  Uart->EnableOnReceivedInterrupt = false;
 }
 // )
 
 // ( Interrupt when no data to send
-void TReadyToSendInterrupt::Get(
-  TBool * State
-)
+TBool TReadyToSendInterrupt::IsOn()
 {
-  *State = Uart->EnableOnReadyToSendInterrupt;
+  return Uart->EnableOnReadyToSendInterrupt;
 }
 
-void TReadyToSendInterrupt::Set(
-  TBool State
-)
+void TReadyToSendInterrupt::On()
 {
-  Uart->EnableOnReadyToSendInterrupt = State;
+  Uart->EnableOnReadyToSendInterrupt = true;
+}
+
+void TReadyToSendInterrupt::Off()
+{
+  Uart->EnableOnReadyToSendInterrupt = false;
 }
 // )
 
 // ( Interrupt when data frame sent
-void TSentDataInterrupt::Get(
-  TBool * State
-)
+TBool TSentDataInterrupt::IsOn()
 {
-  *State = Uart->EnableOnSentInterrupt;
+  return Uart->EnableOnSentInterrupt;
 }
 
-void TSentDataInterrupt::Set(
-  TBool State
-)
+void TSentDataInterrupt::On()
 {
-  Uart->EnableOnSentInterrupt = State;
+  Uart->EnableOnSentInterrupt = true;
+}
+
+void TSentDataInterrupt::Off()
+{
+  Uart->EnableOnSentInterrupt = false;
 }
 // )
 
@@ -78,4 +81,5 @@ void TSentDataInterrupt::Set(
   2024-11 # #
   2025-07-13
   2025-09-22 Using Switch interface
+  2025-09-23
 */
