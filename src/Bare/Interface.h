@@ -51,7 +51,7 @@ namespace me_Uart_Bare
     // Byte 3 (UCSR0C)
     TUint_1 Sync_Polarity : 1;
     TUint_1 FrameSize_12 : 2;
-    TUint_1 StopBits : 1;
+    TBool UseTwoStopBits : 1;
     TUint_1 Parity : 2;
     TUint_1 TransceiverMode : 2;
 

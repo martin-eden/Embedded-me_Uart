@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-10-04
 */
 
 /*
@@ -44,7 +44,7 @@ void TFrameSetter::SetNoParity()
 // Set one stop bit in a frame
 void TFrameSetter::SetOneStopBit()
 {
-  Uart->StopBits = 0;
+  Uart->UseTwoStopBits = false;
 }
 
 /*
