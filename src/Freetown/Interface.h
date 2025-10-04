@@ -2,13 +2,12 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-23
+  Last mod.: 2025-10-04
 */
 
 #pragma once
 
 #include <me_BaseTypes.h>
-#include <me_Switch.h>
 
 namespace me_Uart_Freetown
 {
