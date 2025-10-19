@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-10-19
 */
 
 /*
@@ -39,66 +39,19 @@ using namespace me_Uart_Freetown;
 using me_Uart_Bare::Uart;
 
 /*
-  Calculate how many units can be fit in given length
-
-  Helper.
-
-  Used for calculating bit duration.
-*/
-TBool GetNumUnitsForLength(
-  TUint_4 * NumUnits,
-  TUint_4 Length,
-  TUint_4 UnitSize
-)
-{
-  if (UnitSize == 0)
-    return false;
-
-  // Rounding to nearest integer
-  *NumUnits = ((2 * Length / UnitSize) + 1) / 2;
-
-  return true;
-}
-
-/*
-  Speed (bits per second)
-
-  Internal structure.
-
-  Speed is described as number of time units
-  and unit size (normal or double-size).
-*/
-struct TSpeedSetting
-{
-  TUint_2 BitDuration_ut;
-  TBool UseNormalSpeed;
-};
-
-/*
   Calculate bit duration in hardware time units
 */
-TBool CalculateBitDuration_ut(
-  TSpeedSetting * HwSpeed,
+static TBool CalculateBitDuration_ut(
+  me_HardwareClockScaling::TClockScale * ClockScale,
   TUint_4 Speed_Bps
 )
 {
-  me_HardwareClockScaling::TClockScale ClockScale;
-  TBool IsOk;
-
-  IsOk =
+  return
     me_HardwareClockScaling::CalculateClockScale(
-      &ClockScale,
+      ClockScale,
       Speed_Bps,
       me_HardwareClockScaling::AtMega328::GetSpec_Uart()
     );
-
-  if (!IsOk)
-    return false;
-
-  HwSpeed->UseNormalSpeed = (ClockScale.Prescale_PowOfTwo == 4);
-  HwSpeed->BitDuration_ut = ClockScale.CounterLimit + 1;
-
-  return true;
 }
 
 /*
@@ -108,18 +61,19 @@ TBool TSpeedSetter::SetSpeed(
   TUint_4 Speed_Bps
 )
 {
-  TSpeedSetting SpeedSetting;
+  me_HardwareClockScaling::TClockScale ClockScale;
 
-  if (!CalculateBitDuration_ut(&SpeedSetting, Speed_Bps))
+  if (!CalculateBitDuration_ut(&ClockScale, Speed_Bps))
     return false;
 
-  // assert( 1 <= SpeedSetting.BitDuration_ut <= 4096 )
-  SetBitDuration_ut(SpeedSetting.BitDuration_ut - 1);
+  SetBitDuration_ut(ClockScale.CounterLimit);
 
-  if (SpeedSetting.UseNormalSpeed)
+  if (ClockScale.Prescale_PowOfTwo == 3)
+    SetDoubleSpeed();
+  else if (ClockScale.Prescale_PowOfTwo == 4)
     SetNormalSpeed();
   else
-    SetDoubleSpeed();
+    return false;
 
   return true;
 }
@@ -189,5 +143,5 @@ void TSpeedSetter::SetDoubleSpeed()
 /*
   2024 # # # # # # #
   2025-07-13
-  2025-10-18
+  2025-10-19
 */
