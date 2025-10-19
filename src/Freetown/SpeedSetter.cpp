@@ -32,6 +32,8 @@
 
 #include "Bare/Interface.h"
 
+#include <me_HardwareClockScaling.h>
+
 using namespace me_Uart_Freetown;
 
 using me_Uart_Bare::Uart;
@@ -74,55 +76,27 @@ struct TSpeedSetting
 
 /*
   Calculate bit duration in hardware time units
-
-  We're inverting speed to delays.
-
-  We're willing to use smaller time units for precision.
-
-  If there are too much small time units, we'll use larger ones.
 */
 TBool CalculateBitDuration_ut(
   TSpeedSetting * HwSpeed,
   TUint_4 Speed_Bps
 )
 {
-  // Bit duration we can store is 12-bit value
-  const TUint_4 MaxDuration = (1 << 12);
+  me_HardwareClockScaling::TClockScale ClockScale;
+  TBool IsOk;
 
-  TUint_4 CycleDuration;
-  TUint_4 CyclesPerSecond;
-  TBool UsedDoubleUnits;
+  IsOk =
+    me_HardwareClockScaling::CalculateClockScale(
+      &ClockScale,
+      Speed_Bps,
+      me_HardwareClockScaling::AtMega328::GetSpec_Uart()
+    );
 
-  // Duration of cycle is 8 ticks
-  CyclesPerSecond = F_CPU / 8;
-  UsedDoubleUnits = false;
-
-  // Calculate duration
-  if (!GetNumUnitsForLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
+  if (!IsOk)
     return false;
 
-  // Speed too slow:
-  if (CycleDuration > MaxDuration)
-  {
-    // Duration of cycle is 16 ticks
-    CyclesPerSecond = F_CPU / 16;
-    UsedDoubleUnits = true;
-
-    // Calculate duration
-    if (!GetNumUnitsForLength(&CycleDuration, CyclesPerSecond, Speed_Bps))
-      return false;
-
-    // Speed still too slow. Fail
-    if (CycleDuration > MaxDuration)
-      return false;
-  }
-
-  // Speed too high. Fail
-  if (CycleDuration == 0)
-    return false;
-
-  HwSpeed->BitDuration_ut = (TUint_2) CycleDuration;
-  HwSpeed->UseNormalSpeed = UsedDoubleUnits;
+  HwSpeed->UseNormalSpeed = (ClockScale.Prescale_PowOfTwo == 4);
+  HwSpeed->BitDuration_ut = ClockScale.CounterLimit + 1;
 
   return true;
 }
@@ -135,11 +109,8 @@ TBool TSpeedSetter::SetSpeed(
 )
 {
   TSpeedSetting SpeedSetting;
-  TBool IsOkay;
 
-  IsOkay = CalculateBitDuration_ut(&SpeedSetting, Speed_Bps);
-
-  if (!IsOkay)
+  if (!CalculateBitDuration_ut(&SpeedSetting, Speed_Bps))
     return false;
 
   // assert( 1 <= SpeedSetting.BitDuration_ut <= 4096 )
@@ -160,17 +131,16 @@ TBool TSpeedSetter::GetSpeed(
   TUint_4 * Speed_Bps
 )
 {
-  TUint_2 BitDuration;
-  TUint_1 TicksPerCycle;
+  me_HardwareClockScaling::TClockScale ClockScale;
 
-  BitDuration = Uart->BitDuration.Duration + 1;
+  ClockScale.CounterLimit = Uart->BitDuration.Duration;
 
   if (Uart->UseDoubleSpeed)
-    TicksPerCycle = 8;
+    ClockScale.Prescale_PowOfTwo = 3;
   else
-    TicksPerCycle = 16;
+    ClockScale.Prescale_PowOfTwo = 4;
 
-  return GetNumUnitsForLength(Speed_Bps, F_CPU / TicksPerCycle, BitDuration);
+  return me_HardwareClockScaling::CalculateFrequency(Speed_Bps, ClockScale);
 }
 
 /*
@@ -217,8 +187,7 @@ void TSpeedSetter::SetDoubleSpeed()
 }
 
 /*
-  2024-10 # #
-  2024-11 # # #
-  2024-12 # #
+  2024 # # # # # # #
   2025-07-13
+  2025-10-18
 */
