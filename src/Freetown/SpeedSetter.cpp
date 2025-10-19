@@ -39,22 +39,6 @@ using namespace me_Uart_Freetown;
 using me_Uart_Bare::Uart;
 
 /*
-  Calculate bit duration in hardware time units
-*/
-static TBool CalculateBitDuration_ut(
-  me_HardwareClockScaling::TClockScale * ClockScale,
-  TUint_4 Speed_Bps
-)
-{
-  return
-    me_HardwareClockScaling::CalculateClockScale(
-      ClockScale,
-      Speed_Bps,
-      me_HardwareClockScaling::AtMega328::GetSpec_Uart()
-    );
-}
-
-/*
   Set transceiver speed
 */
 TBool TSpeedSetter::SetSpeed(
@@ -62,8 +46,16 @@ TBool TSpeedSetter::SetSpeed(
 )
 {
   me_HardwareClockScaling::TClockScale ClockScale;
+  TBool IsOk;
 
-  if (!CalculateBitDuration_ut(&ClockScale, Speed_Bps))
+  IsOk =
+    me_HardwareClockScaling::CalculateClockScale(
+      &ClockScale,
+      Speed_Bps,
+      me_HardwareClockScaling::AtMega328::GetSpec_Uart()
+    );
+
+  if (!IsOk)
     return false;
 
   SetBitDuration_ut(ClockScale.CounterLimit);
@@ -94,7 +86,8 @@ TBool TSpeedSetter::GetSpeed(
   else
     ClockScale.Prescale_PowOfTwo = 4;
 
-  return me_HardwareClockScaling::CalculateFrequency(Speed_Bps, ClockScale);
+  return
+    me_HardwareClockScaling::CalculateFrequency(Speed_Bps, ClockScale);
 }
 
 /*
@@ -112,7 +105,7 @@ void TSpeedSetter::SetBitDuration_ut(
   /*
     Hardware magic occurs when writing low byte to that USART register
 
-    So we're going into trouble of converting word to record.
+    So we're went into trouble of converting word to record.
     To be sure that low byte of that word is written last.
   */
 
