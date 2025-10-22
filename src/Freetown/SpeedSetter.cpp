@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-19
+  Last mod.: 2025-10-21
 */
 
 /*
@@ -39,66 +39,9 @@ using namespace me_Uart_Freetown;
 using me_Uart_Bare::Uart;
 
 /*
-  Set transceiver speed
+  [Internal] Set bit duration
 */
-TBool TSpeedSetter::SetSpeed(
-  TUint_4 Speed_Bps
-)
-{
-  me_HardwareClockScaling::TClockScale ClockScale;
-  TBool IsOk;
-
-  IsOk =
-    me_HardwareClockScaling::CalculateClockScale(
-      &ClockScale,
-      Speed_Bps,
-      me_HardwareClockScaling::AtMega328::GetSpec_Uart()
-    );
-
-  if (!IsOk)
-    return false;
-
-  SetBitDuration_ut(ClockScale.CounterLimit);
-
-  if (ClockScale.Prescale_PowOfTwo == 3)
-    SetDoubleSpeed();
-  else if (ClockScale.Prescale_PowOfTwo == 4)
-    SetNormalSpeed();
-  else
-    return false;
-
-  return true;
-}
-
-/*
-  Estimate speed using CPU freq and bit duration
-*/
-TBool TSpeedSetter::GetSpeed(
-  TUint_4 * Speed_Bps
-)
-{
-  me_HardwareClockScaling::TClockScale ClockScale;
-
-  ClockScale.CounterLimit = Uart->BitDuration.Duration;
-
-  if (Uart->UseDoubleSpeed)
-    ClockScale.Prescale_PowOfTwo = 3;
-  else
-    ClockScale.Prescale_PowOfTwo = 4;
-
-  return
-    me_HardwareClockScaling::CalculateFrequency(Speed_Bps, ClockScale);
-}
-
-/*
-  Set bit duration
-
-  Custom time unit. Not all durations can be set.
-
-  We're setting "N" value for "for" loop from 0 to N.
-  So it will always run at least once.
-*/
-void TSpeedSetter::SetBitDuration_ut(
+static void SetBitDuration_ut(
   TUint_2 BitDuration
 )
 {
@@ -118,19 +61,90 @@ void TSpeedSetter::SetBitDuration_ut(
 }
 
 /*
-  Use normal transceiver speed
+  [Internal] Use normal transceiver speed
 */
-void TSpeedSetter::SetNormalSpeed()
+static void SetNormalSpeed()
 {
   Uart->UseDoubleSpeed = false;
 }
 
 /*
-  Use double transceiver speed
+  [Internal] Use double transceiver speed
 */
-void TSpeedSetter::SetDoubleSpeed()
+static void SetDoubleSpeed()
 {
   Uart->UseDoubleSpeed = true;
+}
+
+/*
+  [Internal] Set clock scale
+*/
+static TBool SetClockScale(
+  me_HardwareClockScaling::TClockScale ClockScale
+)
+{
+  SetBitDuration_ut(ClockScale.CounterLimit);
+
+  if (ClockScale.Prescale_PowOfTwo == 3)
+    SetDoubleSpeed();
+  else if (ClockScale.Prescale_PowOfTwo == 4)
+    SetNormalSpeed();
+  else
+    return false;
+
+  return true;
+}
+
+/*
+  [Internal] Get clock scale
+*/
+static me_HardwareClockScaling::TClockScale GetClockScale()
+{
+  me_HardwareClockScaling::TClockScale ClockScale;
+
+  ClockScale.CounterLimit = Uart->BitDuration.Duration;
+
+  if (Uart->UseDoubleSpeed)
+    ClockScale.Prescale_PowOfTwo = 3;
+  else
+    ClockScale.Prescale_PowOfTwo = 4;
+
+  return ClockScale;
+}
+
+/*
+  Set transceiver speed
+*/
+TBool TSpeedSetter::SetSpeed(
+  TUint_4 Speed_Bps
+)
+{
+  me_HardwareClockScaling::TClockScale ClockScale;
+
+  if (
+    !me_HardwareClockScaling::CalculateClockScale_Specs(
+      &ClockScale,
+      Speed_Bps,
+      me_HardwareClockScaling::AtMega328::GetSpec_Uart()
+    )
+  )
+    return false;
+
+  if (!SetClockScale(ClockScale))
+    return false;
+
+  return true;
+}
+
+/*
+  Estimate speed using CPU freq and bit duration
+*/
+TBool TSpeedSetter::GetSpeed(
+  TUint_4 * Speed_Bps
+)
+{
+  return
+    me_HardwareClockScaling::CalculateFrequency(Speed_Bps, GetClockScale());
 }
 
 /*

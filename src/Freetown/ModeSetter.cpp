@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-07-13
+  Last mod.: 2025-10-22
 */
 
 /*
@@ -34,22 +34,11 @@ using me_Uart_Bare::Uart;
 void TModeSetter::SetAsyncMode()
 {
   Uart->TransceiverMode = 0;
-  ClearPolarityBit();
-}
-
-/*
-  Clear polarity bit
-
-  Polarity is synchronous mode stuff.
-
-  For async mode this bit should be set to zero.
-*/
-void TModeSetter::ClearPolarityBit()
-{
   Uart->Sync_Polarity = 0;
 }
 
 /*
   2024-11 #
   2025-07-13
+  2025-10-22
 */

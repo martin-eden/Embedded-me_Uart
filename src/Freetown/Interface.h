@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-04
+  Last mod.: 2025-10-22
 */
 
 #pragma once
@@ -17,9 +17,6 @@ namespace me_Uart_Freetown
     public:
       // Set asynchronous mode
       void SetAsyncMode();
-
-    protected:
-      void ClearPolarityBit();
   };
 
   // Frame setter
@@ -42,11 +39,6 @@ namespace me_Uart_Freetown
       TBool SetSpeed(TUint_4 Speed_Bps);
       // Estimate real speed
       TBool GetSpeed(TUint_4 * Speed_Bps);
-
-    protected:
-      void SetBitDuration_ut(TUint_2 BitDuration);
-      void SetNormalSpeed();
-      void SetDoubleSpeed();
   };
 
   // [Internal] Switch implementation without virtual methods
@@ -129,9 +121,7 @@ namespace me_Uart_Freetown
 }
 
 /*
-  2024-10 # # # # # # # # #
-  2025-07-13
-  2025-09-05
-  2025-09-22
-  2025-09-23
+  2024 # # # # # # # # #
+  2025 # # # #
+  2025-10-22
 */
