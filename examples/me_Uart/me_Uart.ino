@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-26
+  Last mod.: 2025-10-22
 */
 
 /*
@@ -22,6 +22,7 @@
       9      542  2024-11-09
       9      544  2025-08-26  Changed speed to 115k
       9      562  2025-09-23  Internal Switch class
+      9      940  2025-10-22  Using standalone speed calculation
 */
 
 #include <me_Uart.h>
