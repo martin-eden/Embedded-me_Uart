@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-21
+  Last mod.: 2025-11-26
 */
 
 /*
@@ -125,7 +125,7 @@ TBool TSpeedSetter::SetSpeed(
     !me_HardwareClockScaling::CalculateClockScale_Specs(
       &ClockScale,
       Speed_Bps,
-      me_HardwareClockScaling::AtMega328::GetSpec_Uart()
+      me_HardwareClockScaling::AtMega328::GetSpecs_Uart()
     )
   )
     return false;
