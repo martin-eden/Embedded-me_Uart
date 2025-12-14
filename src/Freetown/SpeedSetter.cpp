@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-26
+  Last mod.: 2025-12-14
 */
 
 /*
@@ -80,7 +80,7 @@ static void SetDoubleSpeed()
   [Internal] Set clock scale
 */
 static TBool SetClockScale(
-  me_HardwareClockScaling::TClockScale ClockScale
+  me_HardwareClockScaling::THardwareDuration ClockScale
 )
 {
   SetBitDuration_ut(ClockScale.CounterLimit);
@@ -98,9 +98,9 @@ static TBool SetClockScale(
 /*
   [Internal] Get clock scale
 */
-static me_HardwareClockScaling::TClockScale GetClockScale()
+static me_HardwareClockScaling::THardwareDuration GetClockScale()
 {
-  me_HardwareClockScaling::TClockScale ClockScale;
+  me_HardwareClockScaling::THardwareDuration ClockScale;
 
   ClockScale.CounterLimit = Uart->BitDuration.Duration;
 
@@ -119,7 +119,7 @@ TBool TSpeedSetter::SetSpeed(
   TUint_4 Speed_Bps
 )
 {
-  me_HardwareClockScaling::TClockScale ClockScale;
+  me_HardwareClockScaling::THardwareDuration ClockScale;
 
   if (
     !me_HardwareClockScaling::CalculateClockScale_Specs(
