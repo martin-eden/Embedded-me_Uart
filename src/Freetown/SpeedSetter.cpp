@@ -83,7 +83,7 @@ static TBool SetClockScale(
   me_HardwareClockScaling::THardwareDuration ClockScale
 )
 {
-  SetBitDuration_ut(ClockScale.CounterLimit);
+  SetBitDuration_ut(ClockScale.Scale_BaseOne);
 
   if (ClockScale.Prescale_PowOfTwo == 3)
     SetDoubleSpeed();
@@ -102,7 +102,7 @@ static me_HardwareClockScaling::THardwareDuration GetClockScale()
 {
   me_HardwareClockScaling::THardwareDuration ClockScale;
 
-  ClockScale.CounterLimit = Uart->BitDuration.Duration;
+  ClockScale.Scale_BaseOne = Uart->BitDuration.Duration;
 
   if (Uart->UseDoubleSpeed)
     ClockScale.Prescale_PowOfTwo = 3;
