@@ -122,7 +122,7 @@ TBool TSpeedSetter::SetSpeed(
   me_HardwareClockScaling::THardwareDuration ClockScale;
 
   if (
-    !me_HardwareClockScaling::CalculateClockScale_Specs(
+    !me_HardwareClockScaling::CalculateHardwareDuration_Specs(
       &ClockScale,
       Speed_Bps,
       me_HardwareClockScaling::AtMega328::GetSpecs_Uart()
