@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-14
+  Last mod.: 2026-03-02
 */
 
 #pragma once
@@ -62,7 +62,7 @@ namespace me_Uart_Bare
     TBitDuration BitDuration;
 
     // Byte 7 (UDR0)
-    TUint_1 Buffer : 8;
+    volatile TUint_1 Buffer : 8;
   };
 
   // Mapping to address
@@ -70,8 +70,7 @@ namespace me_Uart_Bare
 }
 
 /*
-  2024-10 # # # #
-  2024-11 # # # #
-  2024-12 #
-  2025-07-13
+  2024 # # # # # # # #
+  2025 #
+  2026-03-02
 */
