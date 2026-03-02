@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-22
+  Last mod.: 2026-03-02
 */
 
 /*
@@ -23,6 +23,7 @@
       9      544  2025-08-26  Changed speed to 115k
       9      562  2025-09-23  Internal Switch class
       9      940  2025-10-22  Using standalone speed calculation
+      9      978  2026-03-02  Volatile buffer byte
 */
 
 #include <me_Uart.h>
