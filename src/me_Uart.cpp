@@ -53,17 +53,6 @@ TBool me_Uart::Init(
 
 /*
   Receive byte
-
-  def
-  (
-    get
-    (
-      ( assert ( Received 1 ) )
-      ( let ( errors FrameHasErrors ) )
-      ( write ( Buffer ) )
-      ( assert ( errors 0 ) )
-    )
-  )
 */
 TBool me_Uart::GetByte(
   TUint_1 * Value
@@ -71,22 +60,7 @@ TBool me_Uart::GetByte(
 {
   me_Uart_Freetown::TReceiver Receiver;
 
-  /*
-    There is hardware magic at accessing transceiver buffer.
-    Reading or writing it updates flags. So flags must be read first.
-  */
-
-  if (!Receiver.HasData())
-    return false;
-
-  TBool DataHasErorrs = Receiver.AreErrors();
-
-  *Value = Receiver.Get();
-
-  if (DataHasErorrs)
-    return false;
-
-  return true;
+  return Receiver.Get(Value);
 }
 
 /*
@@ -115,8 +89,5 @@ void me_Uart::WaitByte(
 
 /*
   2024 # # # # #
-  2025-07-13
-  2025-08-25
-  2025-08-26
-  2025-08-29
+  2025 # # # #
 */

@@ -2,19 +2,19 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-23
+  Last mod.: 2026-11-21
 */
 
 /*
                          Receiver
-  -----------------------------------------------------------
+  -----------------------------------------------------------------
        |               Data                |
-   On  |                                   | (o) Has data
-   [x] |   7   6   5   4   3   2   1   0   | (o) With errors
-    |  |  (o) (o) (o) (o) (o) (o) (o) (o)  |    __________
-   [ ] |                                   |   | Get next |
-       |                                   |   `~~~~~~~~~~'
-  -----------------------------------------------------------
+   On  |                                   | ,~~~~~~~~~~.
+   [x] |   7   6   5   4   3   2   1   0   | | Get next | (o) Good
+    |  |  (o) (o) (o) (o) (o) (o) (o) (o)  | `~~~~~~~~~~'
+   [ ] |                                   |
+       |                                   |
+  -----------------------------------------------------------------
 */
 
 #include "Freetown/Interface.h"
@@ -42,24 +42,42 @@ void TReceiverSwitch::Off()
 }
 // )
 
-TBool TReceiver::HasData()
-{
-  return Uart->Received;
-}
+/*
+  Receive byte
 
-TBool TReceiver::AreErrors()
-{
-  return (Uart->FrameHasErrors != 0);
-}
+  There is hardware magic at accessing transceiver buffer.
+  Reading or writing it updates flags. So flags must be read first.
 
-TUint_1 TReceiver::Get()
+  def
+  (
+    get
+    (
+      ( assert ( Received 1 ) )
+      ( let ( errors FrameHasErrors ) )
+      ( write ( Buffer ) )
+      ( assert ( errors 0 ) )
+    )
+  )
+*/
+TBool TReceiver::Get(
+  TUint_1 * Data
+)
 {
-  return Uart->Buffer;
+  if (!Uart->Received)
+    return false;
+
+  TBool DataHasErorrs = (Uart->FrameHasErrors != 0);
+
+  *Data = Uart->Buffer;
+
+  if (DataHasErorrs)
+    return false;
+
+  return true;
 }
 
 /*
-  2024-11 #
-  2025-07-13
-  2025-09-22
-  2025-09-23
+  2024 #
+  2025 # # #
+  2026-11-21
 */

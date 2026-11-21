@@ -91,9 +91,7 @@ namespace me_Uart_Freetown
   {
     public:
       TReceiverSwitch Switch;
-      TBool HasData();
-      TBool AreErrors();
-      TUint_1 Get();
+      TBool Get(TUint_1 * Data);
       TReceivedDataInterrupt HasDataInterrupt;
   };
 
