@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-23
+  Last mod.: 2026-11-21
 */
 
 #include <me_Uart.h>
@@ -53,6 +53,17 @@ TBool me_Uart::Init(
 
 /*
   Receive byte
+
+  def
+  (
+    get
+    (
+      ( assert ( Received 1 ) )
+      ( let ( errors FrameHasErrors ) )
+      ( write ( Buffer ) )
+      ( assert ( errors 0 ) )
+    )
+  )
 */
 TBool me_Uart::GetByte(
   TUint_1 * Value
@@ -87,12 +98,7 @@ void me_Uart::SendByte(
 {
   me_Uart_Freetown::TTransmitter Transmitter;
 
-  while (!Transmitter.IsReady());
-
   Transmitter.Send(Value);
-
-  while (!Transmitter.IsSent());
-  Transmitter.ClearSentFlag();
 }
 
 /*

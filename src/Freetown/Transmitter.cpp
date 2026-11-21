@@ -2,22 +2,19 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-22
+  Last mod.: 2026-11-21
 */
 
 /*
                          Transmitter
-  ---------------------------------------------------------------
+  ---------------------------------------------------------
        |                 Data                   |
-   On  |     7   6   5   4   3   2   1   0      | (o) Ready
-   [x] |    [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]     |  ______
-    |  |     |   |   |   |   |   |   |   |      | | Send |
-   [ ] |    [x] [x] [x] [x] [x] [x] [x] [x]     | `~~~~~~'
-       |                                        | (o) Sent
-       |                                        |  ____________
-       |                                        | | Clear Sent |
-       |                                        | `~~~~~~~~~~~~'
-  ---------------------------------------------------------------
+   On  |     7   6   5   4   3   2   1   0      | ,~~~~~~.
+   [x] |    [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]     | | Send |
+    |  |     |   |   |   |   |   |   |   |      | `~~~~~~'
+   [ ] |    [x] [x] [x] [x] [x] [x] [x] [x]     |
+       |                                        |
+  ---------------------------------------------------------
 */
 
 #include "Freetown/Interface.h"
@@ -45,31 +42,32 @@ void TTransmitterSwitch::Off()
 }
 // )
 
-TBool TTransmitter::IsReady()
-{
-  return Uart->ReadyToSend;
-}
+/*
+  Send byte
 
-TBool TTransmitter::IsSent()
-{
-  return Uart->Sent;
-}
-
-void TTransmitter::ClearSentFlag()
-{
-  Uart->Sent = true;
-}
-
+  def
+  (
+    put
+    (
+      ( wait ( assert ( ReadyToSend 1 ) ) )
+      ( set ( Buffer read ) )
+      ( wait ( assert ( Sent 1 ) ) )
+      ( set ( Sent 1 ) )
+    )
+  )
+*/
 void TTransmitter::Send(
   TUint_1 Data
 )
 {
+  while (!Uart->ReadyToSend);
   Uart->Buffer = Data;
+  while (!Uart->Sent);
+  Uart->Sent = true;
 }
 
 /*
   2024 # #
-  2025-07-13
-  2025-09-05
-  2025-09-22
+  2025 # # #
+  2026-11-21
 */

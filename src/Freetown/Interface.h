@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-22
+  Last mod.: 2026-11-21
 */
 
 #pragma once
@@ -111,10 +111,7 @@ namespace me_Uart_Freetown
   {
     public:
       TTransmitterSwitch Switch;
-      TBool IsReady();
       void Send(TUint_1 Data);
-      TBool IsSent();
-      void ClearSentFlag();
       TReadyToSendInterrupt IsReadyInterrupt;
       TSentDataInterrupt FrameSentInterrupt;
   };
@@ -122,6 +119,6 @@ namespace me_Uart_Freetown
 
 /*
   2024 # # # # # # # # #
-  2025 # # # #
-  2025-10-22
+  2025 # # # # #
+  2026-11-21
 */
