@@ -2,7 +2,42 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2026-03-02
+  Last mod.: 2026-11-21
+*/
+
+/*
+  Storage format
+
+  Below is LISP-like pseudocode. That's bits tree and harware
+  behavior notes.
+
+  bits_tree
+  (
+    1537
+    (
+      02 01 UseDoubleSpeed
+      03 03 FrameHasErrors
+      06 01 ReadyToSend
+      07 01 Sent
+      08 01 Received
+      11 01 FrameSize_3
+      12 01 EnableTransmitter
+      13 01 EnableReceiver
+      14 01 EnableOnReadyToSendInterrupt
+      15 01 EnableOnSentInterrupt
+      16 01 EnableOnReceivedInterrupt
+      17 01 Sync_Polarity
+      18 02 FrameSize_12
+      20 01 UseTwoStopBits
+      21 02 Parity
+      23 02 TransceiverMode
+      33 12 BitDuration
+      49 08 Buffer
+    )
+    UART
+  )
+  (* <Received> flag is cleared by reading <Buffer> )
+  (* <Sent> flag is cleared by writing 1 )
 */
 
 #pragma once
